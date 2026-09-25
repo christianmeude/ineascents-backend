@@ -541,6 +541,118 @@
                 }
             }
         },
+        "/api/user/password/request": {
+            "post": {
+                "tags": [
+                    "Profile"
+                ],
+                "summary": "Send password-change code to current email",
+                "operationId": "b7ffbeb5473b7360b1effd92947bb46f",
+                "responses": {
+                    "200": {
+                        "description": "Code sent",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Code sent."
+                                        },
+                                        "code_expires_at": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Resend cooldown"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/user/password/change": {
+            "post": {
+                "tags": [
+                    "Profile"
+                ],
+                "summary": "Change password with current password + code",
+                "operationId": "6c5a6ee6f3e9fa1ee2474e324d9a3f33",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "current_password",
+                                    "code",
+                                    "password",
+                                    "password_confirmation"
+                                ],
+                                "properties": {
+                                    "current_password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "code": {
+                                        "type": "string",
+                                        "example": "482916"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Password changed; other tokens revoked",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Password changed."
+                                        },
+                                        "code": {
+                                            "type": "string",
+                                            "example": "PASSWORD_CHANGED"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Wrong current password, bad code, or validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/api/user/email/verify": {
             "post": {
                 "tags": [

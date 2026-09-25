@@ -20,6 +20,12 @@ class VerificationCodes
 
     public const MAX_ATTEMPTS = 5;
 
+    public const NONE_CODES = [
+        'email_change' => 'EMAIL_CHANGE_NONE',
+        'password_change' => 'PASSWORD_CHANGE_NONE',
+        'password_reset' => 'PASSWORD_RESET_NONE',
+    ];
+
     /**
      * Issue a fresh code, replacing any pending one for this slot.
      * Returns the plain code (only the hash is stored) and its expiry.
@@ -70,7 +76,7 @@ class VerificationCodes
 
         if (! $record) {
             throw new VerificationCodeException(
-                'EMAIL_CHANGE_NONE',
+                self::NONE_CODES[$purpose] ?? 'CODE_NONE',
                 'No pending code. Request a new one first.',
                 404,
             );
@@ -126,7 +132,7 @@ class VerificationCodes
             $this->pruneExpired();
 
             throw new VerificationCodeException(
-                'EMAIL_CHANGE_NONE',
+                self::NONE_CODES[$purpose] ?? 'CODE_NONE',
                 'No pending code. Request a new one first.',
                 404,
             );
