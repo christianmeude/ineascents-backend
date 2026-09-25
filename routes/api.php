@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\AvailabilityController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\PackageController;
+use App\Http\Controllers\Api\PasswordController;
 use App\Http\Controllers\Api\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -23,6 +24,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/user', [ProfileController::class, 'update']);
     Route::post('/user/email/verify', [ProfileController::class, 'verifyEmail']);
     Route::post('/user/email/resend', [ProfileController::class, 'resendEmailCode']);
+    Route::post('/user/password/request', [PasswordController::class, 'request']);
+    Route::post('/user/password/change', [PasswordController::class, 'change']);
 
     Route::get('/bookings', [BookingController::class, 'index']);
     Route::post('/bookings', [BookingController::class, 'store']);
