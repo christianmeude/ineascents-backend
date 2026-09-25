@@ -49,5 +49,23 @@ services:
         sync: false
       - key: DATABASE_URL
         sync: false # Supabase project `ineascents-db` (christianmeude org)
+      - key: MAIL_MAILER
+        # Mirror of Render dashboard (dashboard wins over blueprint).
+        value: smtp
+      - key: MAIL_HOST
+        value: smtp.gmail.com
+      - key: MAIL_PORT
+        value: 587
+      - key: MAIL_ENCRYPTION
+        value: tls
+      - key: MAIL_USERNAME
+        sync: false # ineascents.app@gmail.com (dashboard)
+      - key: MAIL_PASSWORD
+        sync: false # Gmail App Password, spaces removed (dashboard)
+      - key: MAIL_FROM_ADDRESS
+        # Mirror of Render dashboard (dashboard wins over blueprint).
+        value: ineascents.app@gmail.com
+      - key: MAIL_FROM_NAME
+        value: Inea Scents
         # Real values (PayMongo sk/pk live) set via Env Group in dashboard.
 databases: []

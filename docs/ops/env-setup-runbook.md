@@ -44,6 +44,9 @@ secrets out of `render.yaml` (`sync: false`):
 - PayMongo **live** keys
   (`PAYMONGO_PUBLIC_KEY`, `PAYMONGO_SECRET_KEY`), `PAYMONGO_WEBHOOK_SECRET`, `CRON_TOKEN`,
   `DATABASE_URL` → Supabase `ineascents-db`, `APP_KEY`.
+- Gmail SMTP: `MAIL_USERNAME` = `ineascents.app@gmail.com`, `MAIL_PASSWORD` = App Password
+  (Security → 2-Step Verification → App passwords; strip spaces). Non-secret mail shape
+  (`MAIL_MAILER=smtp`, host/port/TLS, from address/name) mirrors `render.yaml`.
 - `APP_KEY` must be unique to prod and never shared with local.
 
 ---
