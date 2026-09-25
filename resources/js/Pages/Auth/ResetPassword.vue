@@ -12,15 +12,11 @@ const props = defineProps({
         type: String,
         required: true,
     },
-    token: {
-        type: String,
-        required: true,
-    },
 });
 
 const form = useForm({
-    token: props.token,
     email: props.email,
+    code: '',
     password: '',
     password_confirmation: '',
 });
@@ -55,6 +51,22 @@ const submit = () => {
                 />
 
                 <InputError class="mt-2 text-center" :message="form.errors.email" />
+            </div>
+
+            <div>
+                <InputLabel for="code" value="Verification Code" />
+
+                <TextInput
+                    id="code"
+                    type="text"
+                    inputmode="numeric"
+                    class="mt-1 block w-full"
+                    v-model="form.code"
+                    required
+                    autocomplete="one-time-code"
+                />
+
+                <InputError class="mt-2 text-center" :message="form.errors.code" />
             </div>
 
             <div>
