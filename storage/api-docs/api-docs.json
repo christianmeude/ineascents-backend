@@ -144,6 +144,73 @@
                         "sanctum": []
                     }
                 ]
+            },
+            "put": {
+                "tags": [
+                    "Profile"
+                ],
+                "summary": "Update profile name, request email change",
+                "description": "Name saves inline. A new email issues a verification code to that address; the login email swaps only after verification.",
+                "operationId": "1fba4955d6de4874aef867256246f4c1",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Jane Doe"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "jane@example.com"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Profile updated; email_pending set when a code was sent",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/User"
+                                        },
+                                        "email_pending": {
+                                            "type": "string",
+                                            "example": "jane@example.com",
+                                            "nullable": true
+                                        },
+                                        "code_expires_at": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "nullable": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error or email taken"
+                    },
+                    "429": {
+                        "description": "Code resend cooldown"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             }
         },
         "/api/availability": {
@@ -473,6 +540,104 @@
                     }
                 }
             }
+        },
+        "/api/user/email/verify": {
+            "post": {
+                "tags": [
+                    "Profile"
+                ],
+                "summary": "Verify email change with code",
+                "operationId": "a2b9a97d2230196af4a2fa5b0535fc00",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "code"
+                                ],
+                                "properties": {
+                                    "code": {
+                                        "type": "string",
+                                        "example": "482916"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Email swapped to the verified address",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/User"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No pending email change"
+                    },
+                    "422": {
+                        "description": "Wrong, expired, or locked code"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/user/email/resend": {
+            "post": {
+                "tags": [
+                    "Profile"
+                ],
+                "summary": "Re-send email change code",
+                "operationId": "8a4011999a0c94e35ced1a675054e020",
+                "responses": {
+                    "200": {
+                        "description": "Fresh code sent to the pending address",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Code re-sent."
+                                        },
+                                        "code_expires_at": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No pending email change"
+                    },
+                    "429": {
+                        "description": "Resend cooldown"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -757,6 +922,10 @@
         {
             "name": "Inquiries",
             "description": "Inquiries"
+        },
+        {
+            "name": "Profile",
+            "description": "Profile"
         }
     ]
 }
