@@ -126,10 +126,16 @@ class AuthController extends Controller
             'code' => 'required|string',
         ]);
 
-        $user = User::where('email', $validated['email'])->first();
+        $email = strtolower(trim($validated['email']));
+
+        $user = User::where('email', $email)->first();
 
         if (! $user) {
             return $this->noPendingRegistration();
+        }
+
+        if (! is_null($user->email_verified_at)) {
+            return new UserResource($user);
         }
 
         $pending = $codes->pendingIncludingExpired($user, self::REGISTER_PURPOSE);
@@ -144,8 +150,7 @@ class AuthController extends Controller
             return response()->json($e->toResponse(), $e->status);
         }
 
-        $user->email_verified_at = now();
-        $user->save();
+        $user->markEmailAsVerified();
 
         return new UserResource($user);
     }
@@ -153,6 +158,7 @@ class AuthController extends Controller
     #[OAT\Post(
         path: '/api/register/resend',
         summary: 'Re-send registration verification code',
+        description: 'Issues a fresh code for a pending registration.',
         tags: ['Auth']
     )]
     #[OAT\RequestBody(
@@ -183,7 +189,9 @@ class AuthController extends Controller
             'email' => 'required|string|email',
         ]);
 
-        $user = User::where('email', $validated['email'])->first();
+        $email = strtolower(trim($validated['email']));
+
+        $user = User::where('email', $email)->first();
 
         if (! $user) {
             return $this->noPendingRegistration();

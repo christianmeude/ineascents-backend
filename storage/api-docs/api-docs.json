@@ -140,6 +140,7 @@
                     "Auth"
                 ],
                 "summary": "Re-send registration verification code",
+                "description": "Issues a fresh code for a pending registration.",
                 "operationId": "4fd2c71fd3e444aac82d2b3a0ac85e1f",
                 "requestBody": {
                     "required": true,

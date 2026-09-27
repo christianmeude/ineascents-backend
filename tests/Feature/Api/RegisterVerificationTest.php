@@ -71,12 +71,63 @@ class RegisterVerificationTest extends TestCase
         ])->assertStatus(422);
     }
 
+    public function test_register_verify_is_idempotent_once_verified()
+    {
+        Notification::fake();
+
+        $this->postJson('/api/register', [
+            'name' => 'New User',
+            'email' => 'twice@example.com',
+            'password' => 'password123',
+        ])->assertStatus(201);
+
+        $code = null;
+        Notification::assertSentOnDemand(VerificationCodeMail::class, function ($notification) use (&$code) {
+            $code = $notification->code;
+
+            return true;
+        });
+
+        $this->postJson('/api/register/verify', [
+            'email' => 'twice@example.com',
+            'code' => $code,
+        ])->assertStatus(200);
+
+        $this->postJson('/api/register/verify', [
+            'email' => 'twice@example.com',
+            'code' => $code,
+        ])->assertStatus(200)->assertJsonMissingPath('access_token');
+    }
+
     public function test_register_verify_unknown_email_returns_none()
     {
         $this->postJson('/api/register/verify', [
             'email' => 'ghost@example.com',
             'code' => '482916',
         ])->assertStatus(404)->assertJsonPath('code', 'REGISTER_NONE');
+    }
+
+    public function test_grandfather_migration_verifies_pre_gate_users()
+    {
+        $user = User::factory()->unverified()->create([
+            'email' => 'legacy@example.com',
+            'password' => Hash::make('password123'),
+        ]);
+
+        $this->postJson('/api/login', [
+            'email' => 'legacy@example.com',
+            'password' => 'password123',
+        ])->assertStatus(422)->assertJsonPath('code', 'EMAIL_NOT_VERIFIED');
+
+        $migration = require database_path('migrations/2026_09_27_000001_grandfather_existing_email_verification.php');
+        $migration->up();
+
+        $this->assertNotNull($user->refresh()->email_verified_at);
+
+        $this->postJson('/api/login', [
+            'email' => 'legacy@example.com',
+            'password' => 'password123',
+        ])->assertStatus(200)->assertJsonStructure(['access_token']);
     }
 
     public function test_register_resend_cools_down()
