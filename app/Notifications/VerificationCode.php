@@ -20,11 +20,16 @@ class VerificationCode extends Notification
 
     public function toMail(object $notifiable): MailMessage
     {
+        $subject = 'Your Inea Scents verification code';
+        if (app()->environment('local')) {
+            $subject = '[LOCAL] '.$subject;
+        }
+
         return (new MailMessage)
-            ->subject('Your Inea Scents verification code')
-            ->greeting('Hello from INEA Scents')
-            ->line("Your {$this->purpose} code is:")
-            ->line($this->code)
-            ->line('This code expires in 15 minutes. If you did not request it, ignore this email.');
+            ->subject($subject)
+            ->view('mail.verification-code', [
+                'code' => $this->code,
+                'purpose' => $this->purpose,
+            ]);
     }
 }

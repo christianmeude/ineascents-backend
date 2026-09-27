@@ -35,11 +35,27 @@ class VerificationCodeMailTest extends TestCase
         $mail = (new VerificationCode(self::CODE, 'password reset'))->toMail($user);
 
         $this->assertSame('Your Inea Scents verification code', $mail->subject);
-        $this->assertContains(self::CODE, $mail->introLines);
-        $this->assertContains(
+
+        $html = $mail->render();
+
+        $this->assertStringContainsString(self::CODE, $html);
+        $this->assertStringContainsString('INEA SCENTS', $html);
+        $this->assertStringContainsString('Your password reset code is:', $html);
+        $this->assertStringContainsString(
             'This code expires in 15 minutes. If you did not request it, ignore this email.',
-            $mail->introLines
+            $html
         );
+    }
+
+    public function test_verification_code_mail_subject_carries_local_prefix_on_local(): void
+    {
+        $this->app->detectEnvironment(fn () => 'local');
+
+        $user = User::factory()->create();
+
+        $mail = (new VerificationCode(self::CODE, 'password reset'))->toMail($user);
+
+        $this->assertSame('[LOCAL] Your Inea Scents verification code', $mail->subject);
     }
 
     public function test_verification_code_mail_sender_is_configured(): void
