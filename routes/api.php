@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register']);
+Route::post('/register/verify', [AuthController::class, 'verifyRegistration'])->middleware('throttle:10,1');
+Route::post('/register/resend', [AuthController::class, 'resendRegistrationCode'])->middleware('throttle:10,1');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/forgot-password', [PasswordResetController::class, 'request'])->middleware('throttle:10,1');
 Route::post('/reset-password', [PasswordResetController::class, 'reset'])->middleware('throttle:10,1');

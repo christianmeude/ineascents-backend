@@ -24,6 +24,7 @@ class VerificationCodes
         'email_change' => 'EMAIL_CHANGE_NONE',
         'password_change' => 'PASSWORD_CHANGE_NONE',
         'password_reset' => 'PASSWORD_RESET_NONE',
+        'register' => 'REGISTER_NONE',
     ];
 
     /**
