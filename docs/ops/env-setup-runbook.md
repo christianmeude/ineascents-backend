@@ -25,6 +25,26 @@ prod `API_URL` (accepted limitation, see ADR-0009).
 
 ---
 
+## Local
+
+### Mailpit mail preview (default, manual binary)
+Local mail never touches an inbox. `.env.example` ships Mailpit defaults (`MAIL_MAILER=smtp`,
+`MAIL_HOST=127.0.0.1`, `MAIL_PORT=1025`); rendered mail is inspected in the Mailpit web UI at
+http://127.0.0.1:8025. Setup (standalone binary, no container, no `docker/` compose file):
+
+1. Download the Mailpit release for your OS (https://github.com/axllent/mailpit/releases),
+   extract, run `mailpit` (SMTP on 1025, UI on 8025).
+2. Copy `.env.example` → `.env`; keep the Mailpit mail block as-is.
+3. Trigger any code-mail flow (register, password reset); the message appears in the UI.
+   Local subjects carry a `[LOCAL]` prefix (see `docs/adr/0012-local-mail-preview-and-branded-code-template.md`).
+
+Gmail SMTP override (delivery tests only): set `MAIL_MAILER=smtp`, `MAIL_HOST=smtp.gmail.com`,
+`MAIL_PORT=587`, `MAIL_ENCRYPTION=tls`, `MAIL_USERNAME=ineascents.app@gmail.com`,
+`MAIL_PASSWORD=<16-letter App Password, spaces removed>` in local `.env` (gitignored, never
+committed) when a real-delivery check is needed. Default day-to-day stays Mailpit.
+
+---
+
 ## Render
 
 ### Applied: production service
