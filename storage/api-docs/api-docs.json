@@ -18,6 +18,7 @@
                     "Auth"
                 ],
                 "summary": "Register a new user",
+                "description": "Creates a pending user and sends an email verification code. No session is issued until the email is verified.",
                 "operationId": "8e4e3cb7b46126f4696379d3c7eeb4ad",
                 "requestBody": {
                     "required": true,
@@ -51,18 +52,142 @@
                     }
                 },
                 "responses": {
-                    "200": {
-                        "description": "User registered successfully",
+                    "201": {
+                        "description": "User created pending verification; code sent",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/AuthResponse"
+                                    "properties": {
+                                        "user": {
+                                            "$ref": "#/components/schemas/User"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Verify your email to finish registration."
+                                        },
+                                        "code_expires_at": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
                     },
                     "422": {
                         "description": "Validation Error"
+                    }
+                }
+            }
+        },
+        "/api/register/verify": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Verify registration email with code",
+                "description": "Marks the pending user verified. No session is issued; log in afterwards.",
+                "operationId": "4908c6cc312431f247ca262447fafde1",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "code"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "john@example.com"
+                                    },
+                                    "code": {
+                                        "type": "string",
+                                        "example": "482916"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Email verified; user may now log in",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No pending registration"
+                    },
+                    "422": {
+                        "description": "Wrong, expired, or locked code"
+                    }
+                }
+            }
+        },
+        "/api/register/resend": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Re-send registration verification code",
+                "description": "Issues a fresh code for a pending registration.",
+                "operationId": "4fd2c71fd3e444aac82d2b3a0ac85e1f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "john@example.com"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Fresh code sent to the registration address",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Code re-sent."
+                                        },
+                                        "code_expires_at": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No pending registration"
+                    },
+                    "429": {
+                        "description": "Resend cooldown"
                     }
                 }
             }
