@@ -39,7 +39,8 @@ class VerificationCodeMailTest extends TestCase
         $html = $mail->render();
 
         $this->assertStringContainsString(self::CODE, $html);
-        $this->assertStringContainsString('INEA SCENTS', $html);
+        $this->assertStringContainsString('>INEA</span>', $html);
+        $this->assertStringContainsString('>Scents</span>', $html);
         $this->assertStringContainsString('Your password reset code is:', $html);
         $this->assertStringContainsString(
             'This code expires in 15 minutes. If you did not request it, ignore this email.',

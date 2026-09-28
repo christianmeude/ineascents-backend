@@ -14,10 +14,10 @@
 <td style="background-color: #6a4053; font-size: 8px; line-height: 8px; padding: 0;">&nbsp;</td>
 </tr>
 <tr>
-<td align="center" style="font-size: 22px; letter-spacing: 4px; color: #6a4053; padding: 32px 32px 8px 32px;">INEA SCENTS</td>
+<td align="center" style="padding: 32px 32px 8px 32px; white-space: nowrap;"><span style="font-size: 22px; letter-spacing: 4px; color: #6a4053; font-family: 'Josefin Sans', Figtree, 'Segoe UI', Helvetica, Arial, sans-serif; font-weight: 700; vertical-align: baseline;">INEA</span><span style="font-size: 22px; color: #6a4053;">&nbsp;</span><span style="font-size: 28px; color: #6a4053; font-family: 'Great Vibes', 'Snell Roundhand', 'Brush Script MT', cursive; vertical-align: baseline;">Scents</span></td>
 </tr>
 <tr>
-<td align="center" style="font-size: 14px; color: #6a4053; padding: 0 32px 24px 32px;">Hello from INEA Scents</td>
+<td align="center" style="font-size: 14px; color: #6a4053; padding: 0 32px 24px 32px;">Hello from Inea Scents</td>
 </tr>
 <tr>
 <td align="center" style="font-size: 15px; color: #6a4053; padding: 0 32px 16px 32px;">Your {{ $purpose }} code is:</td>

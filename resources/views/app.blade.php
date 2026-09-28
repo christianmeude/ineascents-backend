@@ -3,12 +3,12 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="INEA Scents admin — manage bookings, packages, customers, inquiries, payments, and calendar.">
+        <meta name="description" content="Inea Scents admin — manage bookings, packages, customers, inquiries, payments, and calendar.">
         <meta name="theme-color" content="#6a4053">
         <meta property="og:type" content="website">
-        <meta property="og:site_name" content="INEA Scents">
-        <meta property="og:title" content="INEA Scents Admin">
-        <meta property="og:description" content="INEA Scents admin — bookings, packages, customers, inquiries, payments, calendar.">
+        <meta property="og:site_name" content="Inea Scents">
+        <meta property="og:title" content="Inea Scents Admin">
+        <meta property="og:description" content="Inea Scents admin — bookings, packages, customers, inquiries, payments, calendar.">
 
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
@@ -19,7 +19,7 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Josefin+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 
-        <link rel="icon" href="{{ asset('favicon.ico') }}" />
+        <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}" />
 
         <!-- Scripts -->
         @routes
