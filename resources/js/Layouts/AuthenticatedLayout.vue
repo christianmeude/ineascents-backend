@@ -29,9 +29,8 @@ const navigation = [
         <aside class="w-64 flex-shrink-0 bg-white dark:bg-brand-dark-surface border-r border-brand-primary/20 dark:border-brand-dark-border hidden md:flex md:flex-col shadow-sm z-10 relative transition-colors duration-200">
             <!-- Logo area -->
             <div class="flex h-20 items-center px-6 justify-center">
-                <Link :href="route('admin.dashboard')" class="flex items-center gap-2 text-brand-primary dark:text-brand-cream">
-                    <span class="text-2xl tracking-widest uppercase font-logo-sans font-bold">INEA</span>
-                    <span class="text-3xl capitalize font-normal font-logo-script -ml-1.5 mt-1">Scents</span>
+                <Link :href="route('admin.dashboard')">
+                    <ApplicationLogo />
                 </Link>
             </div>
 
@@ -86,10 +85,7 @@ const navigation = [
                 </div>
                 
                 <div class="flex-1 md:hidden flex justify-center">
-                    <span class="text-xl text-brand-primary dark:text-brand-cream tracking-widest flex items-center font-logo-sans font-bold">
-                        INEA 
-                        <span class="text-2xl capitalize font-normal ml-1 font-logo-script mt-0.5">Scents</span>
-                    </span>
+                    <ApplicationLogo />
                 </div>
 
                 <!-- Right side -->
