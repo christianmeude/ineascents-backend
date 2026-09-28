@@ -108,3 +108,13 @@ _Repos_: client
 A deployment target with isolated config and backing services. Two environments: `local` (developer machine + Supabase CLI + Studio 54323 + DB 54322) and `production` (Render `ineascents` + Supabase `ineascents-db` + Vercel Production; Vercel Preview shares the prod backend). No state, keys, or cookies cross envs. 12-Factor III.
 _Avoid_: env toggle in code
 _Repos_: backend, client
+
+**Mailpit**:
+Local SMTP catcher (default `:1025`, web UI) that receives dev mail instead of an inbox. The documented default for previewing backend mail; Gmail SMTP is reserved for real-delivery checks and `production`.
+_Avoid_: testing mail content by scraping `storage/logs/laravel.log`
+_Repos_: backend
+
+**Provenance marker**:
+A `[LOCAL]` subject prefix applied to mail produced by a `local` stack (`APP_ENV=local` only), so test mail is visibly distinct from `production` mail in any inbox.
+_Avoid_: changing sender identity per env (Gmail requires the from-address to match the account)
+_Repos_: backend
