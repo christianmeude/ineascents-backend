@@ -45,6 +45,9 @@ class VerificationCodeMailTest extends TestCase
             'This code expires in 15 minutes. If you did not request it, ignore this email.',
             $html
         );
+        $this->assertStringContainsString('#6a4053', $html);
+        $this->assertStringContainsString('#fdf4f5', $html);
+        $this->assertStringNotContainsString('#3d2f23', $html);
     }
 
     public function test_verification_code_mail_subject_carries_local_prefix_on_local(): void
