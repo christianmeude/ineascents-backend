@@ -3,6 +3,12 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="INEA Scents admin — manage bookings, packages, customers, inquiries, payments, and calendar.">
+        <meta name="theme-color" content="#6a4053">
+        <meta property="og:type" content="website">
+        <meta property="og:site_name" content="INEA Scents">
+        <meta property="og:title" content="INEA Scents Admin">
+        <meta property="og:description" content="INEA Scents admin — bookings, packages, customers, inquiries, payments, calendar.">
 
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
