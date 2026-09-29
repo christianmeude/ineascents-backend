@@ -15,6 +15,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // A16: '*' required behind Render-style proxies (dynamic IPs);
+        // narrowing here would break prod traffic. Kept deliberately.
         $middleware->trustProxies(at: '*');
 
         // Authenticated users hitting guest routes (e.g. /admin/login with a

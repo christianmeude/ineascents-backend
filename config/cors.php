@@ -17,7 +17,8 @@ return [
 
     'paths' => ['api/*', 'sanctum/csrf-cookie'],
 
-    'allowed_methods' => ['*'],
+    // A16: explicit verbs only — wildcard methods widen preflight trust.
+    'allowed_methods' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
 
     // Two origins, two env vars, local + production only (ADR-0009, no
     // staging). FRONTEND_URL serves the mobile client web origins;
@@ -30,7 +31,8 @@ return [
 
     'allowed_origins_patterns' => array_filter(array_map('trim', explode(',', (string) env('CORS_ALLOWED_ORIGIN_PATTERNS', '')))),
 
-    'allowed_headers' => ['*'],
+    // A16: explicit headers only — wildcard headers leak custom tokens.
+    'allowed_headers' => ['Accept', 'Authorization', 'Content-Type', 'Origin', 'X-Requested-With', 'X-XSRF-TOKEN'],
 
     'exposed_headers' => [],
 

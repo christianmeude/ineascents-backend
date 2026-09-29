@@ -54,7 +54,7 @@ over `render.yaml`): `APP_ENV=production`, `APP_DEBUG=false`,
 `APP_URL=https://ineascents.onrender.com`, `FRONTEND_URL=https://ineascents-app.vercel.app`,
 `LANDING_URL=https://ineascents.vercel.app`,
 `CORS_SUPPORTS_CREDENTIALS=false`, `SANCTUM_STATEFUL_DOMAINS=ineascents-app.vercel.app,ineascents-app-christianmeude1.vercel.app`,
-`SESSION_DOMAIN=""`, `SESSION_SECURE_COOKIE=true`, `SESSION_DRIVER=database`, `LOG_CHANNEL=stack`,
+`SESSION_DOMAIN=""`, `SESSION_SECURE_COOKIE=true`, `SESSION_DRIVER=database`, `LOG_CHANNEL=stderr`,
 `APP_LOCALE=en`, `APP_FALLBACK_LOCALE=en`, `BCRYPT_ROUNDS=12`.
 
 ### Manual (dashboard): secrets
