@@ -336,6 +336,26 @@
                         "sanctum": []
                     }
                 ]
+            },
+            "delete": {
+                "tags": [
+                    "Data Rights"
+                ],
+                "summary": "Erase the requester (anonymize, revoke all sessions)",
+                "operationId": "60333eba8d715b99db3e425ed0264b85",
+                "responses": {
+                    "200": {
+                        "description": "Erased"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             }
         },
         "/api/logout": {
@@ -539,6 +559,28 @@
                                 }
                             }
                         }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/user/export": {
+            "get": {
+                "tags": [
+                    "Data Rights"
+                ],
+                "summary": "Export all data held about the requester",
+                "operationId": "5b3d6de5b5ed0d4f3e9682796cb67a98",
+                "responses": {
+                    "200": {
+                        "description": "Profile, bookings, and email-matched inquiries"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
                     }
                 },
                 "security": [
@@ -1329,6 +1371,10 @@
         {
             "name": "Auth",
             "description": "Auth"
+        },
+        {
+            "name": "Data Rights",
+            "description": "Data Rights"
         },
         {
             "name": "Inquiries",

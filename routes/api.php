@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\DataSubjectController;
 use App\Http\Controllers\Api\AvailabilityController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\PackageController;
@@ -35,6 +36,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/bookings', [BookingController::class, 'index']);
     Route::post('/bookings', [BookingController::class, 'store'])->middleware('throttle:10,1');
+
+    // A19: data-subject rights.
+    Route::get('/user/export', [DataSubjectController::class, 'export'])->middleware('throttle:10,1');
+    Route::delete('/user', [DataSubjectController::class, 'destroy'])->middleware('throttle:10,1');
 });
 
 // Ping endpoint for health checks (decoupled CI test)
