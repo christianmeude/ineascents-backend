@@ -64,6 +64,7 @@ class ExpireStalePendingTest extends TestCase
             'event_date' => '2026-10-10',
             'venue_address' => '789 Place',
             'payment_method' => 'cash',
+            'consent_privacy_version' => \App\Http\Controllers\LegalController::VERSION,
         ]);
 
         $response->assertStatus(201);
@@ -93,6 +94,7 @@ class ExpireStalePendingTest extends TestCase
             'event_date' => '2026-10-10',
             'venue_address' => '789 Place',
             'payment_method' => 'cash',
+            'consent_privacy_version' => \App\Http\Controllers\LegalController::VERSION,
         ]);
 
         $response->assertStatus(422)

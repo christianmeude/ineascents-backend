@@ -23,6 +23,8 @@ class BookingResource extends JsonResource
             'payment_method' => $this->payment_method,
             'status' => $this->status,
             'checkout_url' => $this->checkout_url,
+            'consent_privacy_version' => $this->consent_privacy_version,
+            'consented_at' => $this->consented_at,
             'package' => new PackageResource($this->whenLoaded('package')),
             'scents' => ScentResource::collection($this->whenLoaded('scents')),
         ];

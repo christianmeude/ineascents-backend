@@ -54,6 +54,8 @@ class BookingResourceTest extends TestCase
             'payment_method',
             'status',
             'checkout_url',
+            'consent_privacy_version',
+            'consented_at',
             'package',
             'scents',
         ];

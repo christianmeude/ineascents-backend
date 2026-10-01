@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Enums\PaymentMethod;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\LegalController;
 use App\Models\Booking;
 use App\Models\Package;
 use App\Rules\PaxInTiers;
@@ -59,7 +60,7 @@ class BookingController extends Controller
     #[OAT\RequestBody(
         required: true,
         content: new OAT\JsonContent(
-            required: ['package_id', 'customer_name', 'customer_email', 'pax', 'event_date', 'venue_address', 'payment_method'],
+            required: ['package_id', 'customer_name', 'customer_email', 'pax', 'event_date', 'venue_address', 'payment_method', 'consent_privacy_version'],
             properties: [
                 new OAT\Property(property: 'package_id', type: 'integer'),
                 new OAT\Property(property: 'customer_name', type: 'string'),
@@ -71,6 +72,7 @@ class BookingController extends Controller
                 new OAT\Property(property: 'venue_address', type: 'string'),
                 new OAT\Property(property: 'payment_method', type: 'string', enum: ['online', 'cash']),
                 new OAT\Property(property: 'scent_ids', type: 'array', items: new OAT\Items(type: 'integer')),
+                new OAT\Property(property: 'consent_privacy_version', type: 'string', example: LegalController::VERSION),
             ]
         )
     )]
@@ -104,7 +106,12 @@ class BookingController extends Controller
             'payment_method' => ['required', Rule::enum(PaymentMethod::class)],
             'scent_ids' => 'nullable|array',
             'scent_ids.*' => 'exists:scents,id',
+            // A18: consent must pin the exact current policy text.
+            'consent_privacy_version' => ['required', 'string', Rule::in([LegalController::VERSION])],
         ]);
+
+        // Server-set timestamp: provable when, not client-claimed.
+        $validated['consented_at'] = now();
 
         try {
             $booking = $checkout->execute($validated, $request->user());

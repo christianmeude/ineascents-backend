@@ -91,6 +91,7 @@ class BookingTest extends TestCase
             'venue_address' => '789 Event Place',
             'payment_method' => 'cash',
             'scent_ids' => [$scent1->id, $scent2->id],
+            'consent_privacy_version' => \App\Http\Controllers\LegalController::VERSION,
         ];
 
         $response = $this->actingAs($user, 'sanctum')->postJson('/api/bookings', $bookingData);
@@ -121,6 +122,64 @@ class BookingTest extends TestCase
         $response->assertStatus(401);
     }
 
+    public function test_booking_without_consent_is_rejected(): void
+    {
+        $user = User::factory()->create();
+        $package = Package::create([
+            'name' => 'Test Package',
+            'description' => 'Desc',
+            'price' => 100,
+        ]);
+
+        $response = $this->actingAs($user, 'sanctum')->postJson('/api/bookings', [
+            'package_id' => $package->id,
+            'customer_name' => 'Jane Doe',
+            'customer_email' => 'jane@example.com',
+            'pax' => 4,
+            'event_date' => '2026-12-15',
+            'venue_address' => '789 Event Place',
+            'payment_method' => 'cash',
+        ]);
+
+        $response->assertStatus(422)->assertJsonValidationErrors(['consent_privacy_version']);
+        $this->assertDatabaseCount('bookings', 0);
+    }
+
+    public function test_booking_with_stale_consent_and_timestamp_persist(): void
+    {
+        $user = User::factory()->create();
+        $package = Package::create([
+            'name' => 'Test Package',
+            'description' => 'Desc',
+            'price' => 100,
+        ]);
+
+        $base = [
+            'package_id' => $package->id,
+            'customer_name' => 'Jane Doe',
+            'customer_email' => 'jane@example.com',
+            'pax' => 4,
+            'event_date' => '2026-12-15',
+            'venue_address' => '789 Event Place',
+            'payment_method' => 'cash',
+        ];
+
+        $this->actingAs($user, 'sanctum')
+            ->postJson('/api/bookings', array_merge($base, ['consent_privacy_version' => '2000-01-01']))
+            ->assertStatus(422)->assertJsonValidationErrors(['consent_privacy_version']);
+
+        $this->actingAs($user, 'sanctum')
+            ->postJson('/api/bookings', array_merge($base, [
+                'consent_privacy_version' => \App\Http\Controllers\LegalController::VERSION,
+            ]))->assertStatus(201);
+
+        $this->assertDatabaseHas('bookings', [
+            'customer_email' => 'jane@example.com',
+            'consent_privacy_version' => \App\Http\Controllers\LegalController::VERSION,
+        ]);
+        $this->assertNotNull(Booking::first()->consented_at);
+    }
+
     #[\PHPUnit\Framework\Attributes\DataProvider('retiredPaymentMethods')]
     public function test_retired_payment_methods_are_rejected(string $method): void
     {
@@ -139,6 +198,7 @@ class BookingTest extends TestCase
             'event_date' => '2026-12-15',
             'venue_address' => '789 Event Place',
             'payment_method' => $method,
+            'consent_privacy_version' => \App\Http\Controllers\LegalController::VERSION,
         ]);
 
         $response->assertStatus(422);

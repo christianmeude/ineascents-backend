@@ -88,6 +88,14 @@ const formatDate = (dateString) => {
                             <dt class="font-bold text-brand-primary dark:text-brand-cream text-xs uppercase">Details</dt>
                             <dd class="mt-1 text-brand-primary dark:text-brand-cream whitespace-pre-wrap">{{ inquiry.message }}</dd>
                         </div>
+                        <div>
+                            <dt class="font-bold text-brand-primary dark:text-brand-cream text-xs uppercase">Privacy consent</dt>
+                            <dd class="mt-1 text-brand-primary dark:text-brand-cream">{{ inquiry.consent_privacy_version ?? 'Not recorded (pre-policy)' }}</dd>
+                        </div>
+                        <div v-if="inquiry.consented_at">
+                            <dt class="font-bold text-brand-primary dark:text-brand-cream text-xs uppercase">Consented at</dt>
+                            <dd class="mt-1 text-brand-primary dark:text-brand-cream">{{ inquiry.consented_at }}</dd>
+                        </div>
                     </dl>
 
                     <form @submit.prevent="submit" class="flex flex-wrap items-end gap-4">

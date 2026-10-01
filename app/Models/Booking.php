@@ -25,6 +25,8 @@ use OpenApi\Attributes as OAT;
         new OAT\Property(property: 'status', type: 'string'),
         new OAT\Property(property: 'checkout_url', type: 'string', nullable: true),
         new OAT\Property(property: 'inquiry_id', type: 'integer', nullable: true),
+        new OAT\Property(property: 'consent_privacy_version', type: 'string', nullable: true),
+        new OAT\Property(property: 'consented_at', type: 'string', format: 'date-time', nullable: true),
         new OAT\Property(property: 'package', ref: '#/components/schemas/Package'),
         new OAT\Property(property: 'scents', type: 'array', items: new OAT\Items(ref: '#/components/schemas/Scent')),
     ]
@@ -67,10 +69,13 @@ class Booking extends Model
         'payment_method',
         'checkout_url',
         'inquiry_id',
+        'consent_privacy_version',
+        'consented_at',
     ];
 
     protected $casts = [
         'event_date' => 'date',
+        'consented_at' => 'datetime',
         'total_price' => 'decimal:2',
         'status' => BookingStatus::class,
         'payment_method' => PaymentMethod::class,

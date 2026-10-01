@@ -18,6 +18,8 @@ use OpenApi\Attributes as OAT;
         new OAT\Property(property: 'message', type: 'string', nullable: true),
         new OAT\Property(property: 'status', type: 'string'),
         new OAT\Property(property: 'archived', type: 'boolean'),
+        new OAT\Property(property: 'consent_privacy_version', type: 'string', nullable: true),
+        new OAT\Property(property: 'consented_at', type: 'string', format: 'date-time', nullable: true),
     ]
 )]
 class Inquiry extends Model
@@ -28,6 +30,8 @@ class Inquiry extends Model
         'phone',
         'event_date',
         'message',
+        'consent_privacy_version',
+        'consented_at',
         'status',
         'archived',
     ];
@@ -39,6 +43,7 @@ class Inquiry extends Model
 
     protected $casts = [
         'event_date' => 'date',
+        'consented_at' => 'datetime',
         'status' => InquiryStatus::class,
         'archived' => 'boolean',
     ];

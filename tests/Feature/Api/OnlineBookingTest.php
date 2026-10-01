@@ -25,6 +25,7 @@ class OnlineBookingTest extends TestCase
             'event_time' => '14:00:00',
             'venue_address' => '789 Event Place',
             'payment_method' => 'online',
+            'consent_privacy_version' => \App\Http\Controllers\LegalController::VERSION,
         ];
     }
 

@@ -471,7 +471,8 @@
                                     "pax",
                                     "event_date",
                                     "venue_address",
-                                    "payment_method"
+                                    "payment_method",
+                                    "consent_privacy_version"
                                 ],
                                 "properties": {
                                     "package_id": {
@@ -512,6 +513,10 @@
                                         "items": {
                                             "type": "integer"
                                         }
+                                    },
+                                    "consent_privacy_version": {
+                                        "type": "string",
+                                        "example": "2026-10-01"
                                     }
                                 },
                                 "type": "object"
@@ -559,7 +564,8 @@
                                 "required": [
                                     "name",
                                     "email",
-                                    "phone"
+                                    "phone",
+                                    "consent_privacy_version"
                                 ],
                                 "properties": {
                                     "name": {
@@ -579,6 +585,10 @@
                                     "message": {
                                         "type": "string",
                                         "nullable": true
+                                    },
+                                    "consent_privacy_version": {
+                                        "type": "string",
+                                        "example": "2026-10-01"
                                     }
                                 },
                                 "type": "object"
@@ -1113,6 +1123,15 @@
                         "type": "integer",
                         "nullable": true
                     },
+                    "consent_privacy_version": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "consented_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
                     "package": {
                         "$ref": "#/components/schemas/Package"
                     },
@@ -1154,6 +1173,15 @@
                     },
                     "archived": {
                         "type": "boolean"
+                    },
+                    "consent_privacy_version": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "consented_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
                     }
                 },
                 "type": "object"

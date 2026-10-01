@@ -17,6 +17,8 @@ class InquiryResource extends JsonResource
             'phone' => $this->phone,
             'event_date' => $this->event_date,
             'message' => $this->message,
+            'consent_privacy_version' => $this->consent_privacy_version,
+            'consented_at' => $this->consented_at,
             'status' => $this->status instanceof InquiryStatus ? $this->status->value : $this->status,
             'archived' => $this->archived,
             'created_at' => $this->created_at,

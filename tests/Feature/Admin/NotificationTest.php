@@ -46,6 +46,7 @@ class NotificationTest extends TestCase
             'name' => 'Lead Person',
             'email' => 'lead@example.com',
             'phone' => '09171234567',
+            'consent_privacy_version' => \App\Http\Controllers\LegalController::VERSION,
         ])->assertCreated();
 
         $this->assertDatabaseHas('notifications', ['data->type' => 'inquiry.submitted']);
@@ -76,6 +77,7 @@ class NotificationTest extends TestCase
             'event_date' => '2026-12-20',
             'venue_address' => '123 Test St',
             'payment_method' => 'cash',
+            'consent_privacy_version' => \App\Http\Controllers\LegalController::VERSION,
         ])->assertCreated();
 
         $this->assertDatabaseHas('notifications', ['data->type' => 'booking.created']);

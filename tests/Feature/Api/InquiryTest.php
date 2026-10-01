@@ -17,6 +17,7 @@ class InquiryTest extends TestCase
             'phone' => '+639171234567',
             'event_date' => '2026-12-15',
             'message' => 'Garden wedding for 100 pax, need a quote.',
+            'consent_privacy_version' => \App\Http\Controllers\LegalController::VERSION,
         ], $overrides);
     }
 
@@ -95,6 +96,36 @@ class InquiryTest extends TestCase
 
         $response->assertUnprocessable();
         $this->assertDatabaseCount('inquiries', 0);
+    }
+
+    public function test_missing_consent_is_rejected(): void
+    {
+        $payload = $this->payload();
+        unset($payload['consent_privacy_version']);
+
+        $this->postJson('/api/inquiries', $payload)
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['consent_privacy_version']);
+        $this->assertDatabaseCount('inquiries', 0);
+    }
+
+    public function test_stale_consent_version_is_rejected(): void
+    {
+        $this->postJson('/api/inquiries', $this->payload(['consent_privacy_version' => '2000-01-01']))
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['consent_privacy_version']);
+        $this->assertDatabaseCount('inquiries', 0);
+    }
+
+    public function test_consent_version_and_timestamp_persist(): void
+    {
+        $this->postJson('/api/inquiries', $this->payload())->assertCreated();
+
+        $this->assertDatabaseHas('inquiries', [
+            'email' => 'maria@example.com',
+            'consent_privacy_version' => \App\Http\Controllers\LegalController::VERSION,
+        ]);
+        $this->assertNotNull(\App\Models\Inquiry::first()->consented_at);
     }
 
     public function test_throttle_blocks_eleventh_request(): void

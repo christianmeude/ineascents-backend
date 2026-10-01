@@ -141,6 +141,11 @@ class InquiryController extends Controller
 
         $data['inquiry_id'] = $inquiry->id;
 
+        // A18: carry the inquiry's own consent record onto the booking
+        // (provenance, not fabrication — pre-policy inquiries stay null).
+        $data['consent_privacy_version'] = $inquiry->consent_privacy_version;
+        $data['consented_at'] = $inquiry->consented_at;
+
         try {
             DB::transaction(fn () => [$checkout->execute($data), $inquiry->update(['status' => InquiryStatus::Booked])]);
         } catch (PaymentLinkFailedException $e) {

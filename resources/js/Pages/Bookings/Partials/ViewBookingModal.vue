@@ -95,6 +95,17 @@ const formattedPrice = computed(() => {
                         <dt class="text-xs font-bold tracking-widest uppercase text-brand-muted dark:text-brand-cream/50 mb-1">Total Amount Paid</dt>
                         <dd class="text-3xl font-black text-brand-primary dark:text-brand-cream tracking-tight">{{ formattedPrice }}</dd>
                     </div>
+
+                    <!-- A18: provable privacy consent -->
+                    <div class="sm:col-span-2 h-px bg-brand-primary/10 dark:bg-brand-dark-border my-2"></div>
+                    <div class="flex flex-col gap-2">
+                        <dt class="text-xs font-bold tracking-widest uppercase text-brand-muted dark:text-brand-cream/50 mb-1">Privacy consent</dt>
+                        <dd class="text-lg font-medium text-brand-primary dark:text-brand-cream">{{ booking.consent_privacy_version ?? 'Not recorded (pre-policy)' }}</dd>
+                    </div>
+                    <div class="flex flex-col gap-2 sm:text-right" v-if="booking.consented_at">
+                        <dt class="text-xs font-bold tracking-widest uppercase text-brand-muted dark:text-brand-cream/50 mb-1">Consented at</dt>
+                        <dd class="text-lg font-medium text-brand-primary dark:text-brand-cream">{{ booking.consented_at }}</dd>
+                    </div>
                 </dl>
             </div>
         </div>
