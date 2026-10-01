@@ -30,7 +30,7 @@ const navigation = [
             <!-- Logo area -->
             <div class="flex h-20 items-center px-6 justify-center">
                 <Link :href="route('admin.dashboard')">
-                    <ApplicationLogo />
+                    <ApplicationLogo compact />
                 </Link>
             </div>
 
@@ -85,7 +85,7 @@ const navigation = [
                 </div>
                 
                 <div class="flex-1 md:hidden flex justify-center">
-                    <ApplicationLogo />
+                    <ApplicationLogo compact />
                 </div>
 
                 <!-- Right side -->
