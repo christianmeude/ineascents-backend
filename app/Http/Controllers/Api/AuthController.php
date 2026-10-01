@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Notifications\VerificationCode as VerificationCodeMail;
 use App\Services\VerificationCodes;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\Rules\Password;
@@ -75,26 +76,28 @@ class AuthController extends Controller
             'password' => ['required', 'string', Password::min(12)->uncompromised()],
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+        return DB::transaction(function () use ($request, $codes) {
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
 
-        try {
-            $issued = $codes->issue($user, self::REGISTER_PURPOSE, strtolower(trim($user->email)));
-        } catch (VerificationCodeException $e) {
-            return response()->json($e->toResponse(), $e->status);
-        }
+            try {
+                $issued = $codes->issue($user, self::REGISTER_PURPOSE, strtolower(trim($user->email)));
+            } catch (VerificationCodeException $e) {
+                return response()->json($e->toResponse(), $e->status);
+            }
 
-        Notification::route('mail', $user->email)
-            ->notify(new VerificationCodeMail($issued['code'], 'email verification'));
+            Notification::route('mail', $user->email)
+                ->notify(new VerificationCodeMail($issued['code'], 'email verification'));
 
-        return response()->json([
-            'user' => new UserResource($user),
-            'message' => 'Verify your email to finish registration.',
-            'code_expires_at' => $issued['record']->expires_at->toIso8601String(),
-        ], 201);
+            return response()->json([
+                'user' => new UserResource($user),
+                'message' => 'Verify your email to finish registration.',
+                'code_expires_at' => $issued['record']->expires_at->toIso8601String(),
+            ], 201);
+        });
     }
 
     #[OAT\Post(
