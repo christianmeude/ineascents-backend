@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PackageController;
 use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\LegalController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
@@ -36,6 +37,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 });
 
 require __DIR__.'/auth.php';
+
+// A17: versioned public legal pages (consent pins ?v=).
+Route::get('/privacy', [LegalController::class, 'privacy'])->name('privacy');
+Route::get('/terms', [LegalController::class, 'terms'])->name('terms');
 
 // Root: health hint locally; redirect to FRONTEND_URL when configured.
 // 12-Factor: FRONTEND_URL via config (not direct env() under cache).

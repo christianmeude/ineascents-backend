@@ -56,6 +56,10 @@ return [
 
     'frontend_url' => env('FRONTEND_URL'),
 
+    // A17: public privacy-contact address printed on legal pages
+    // (owner decision 2026-10-01: gmail for now, not a new mailbox).
+    'privacy_contact_email' => env('PRIVACY_CONTACT_EMAIL', 'ineascents.app@gmail.com'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

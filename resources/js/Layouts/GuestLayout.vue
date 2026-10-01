@@ -2,6 +2,11 @@
 import { Link } from '@inertiajs/vue3';
 import ThemeToggle from '@/Components/ThemeToggle.vue';
 import { OverlayScrollbarsComponent } from 'overlayscrollbars-vue';
+
+defineProps({
+    // A17: legal pages need a wider prose column; auth card stays narrow.
+    wide: { type: Boolean, default: false },
+});
 </script>
 
 <template>
@@ -34,8 +39,14 @@ import { OverlayScrollbarsComponent } from 'overlayscrollbars-vue';
             <div class="absolute top-[50%] right-[-5%] h-[500px] w-[300px] rounded-[50%] bg-[#6E3C53] dark:bg-brand-primary/60 blur-[60px] filter pointer-events-none"></div>
             <div class="absolute top-[75%] right-[5%] h-[250px] w-[600px] rounded-[50%] bg-[#6E3C53] dark:bg-brand-primary/60 blur-[60px] filter pointer-events-none"></div>
 
-            <div class="relative z-10 w-full max-w-sm px-6 py-12">
+            <div class="relative z-10 w-full px-6 py-12" :class="wide ? 'max-w-2xl' : 'max-w-sm'">
                 <slot />
+                <!-- A17: legal links reachable from every guest surface incl. admin login. -->
+                <div class="mt-6 flex items-center justify-center gap-4 text-xs text-brand-muted dark:text-brand-cream/60">
+                    <Link :href="route('privacy')" class="underline hover:text-brand-primary dark:hover:text-brand-cream">Privacy</Link>
+                    <span aria-hidden="true">·</span>
+                    <Link :href="route('terms')" class="underline hover:text-brand-primary dark:hover:text-brand-cream">Terms</Link>
+                </div>
             </div>
         </div>
     </OverlayScrollbarsComponent>
