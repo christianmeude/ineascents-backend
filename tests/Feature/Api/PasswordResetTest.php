@@ -86,21 +86,21 @@ class PasswordResetTest extends TestCase
         $this->postJson('/api/reset-password', [
             'email' => 'jane@example.com',
             'code' => '482916',
-            'password' => 'newpassword123',
-            'password_confirmation' => 'newpassword123',
+            'password' => 'C0ncierge-Str0ng-77',
+            'password_confirmation' => 'C0ncierge-Str0ng-77',
         ])
             ->assertStatus(200)
             ->assertValidResponse(200)
             ->assertJson(['code' => 'PASSWORD_RESET_DONE']);
 
-        $this->assertTrue(Hash::check('newpassword123', $user->fresh()->password));
+        $this->assertTrue(Hash::check('C0ncierge-Str0ng-77', $user->fresh()->password));
 
         Auth::forgetGuards();
 
         $this->getJson('/api/user', ['Authorization' => 'Bearer '.$oldToken])
             ->assertStatus(401);
 
-        $this->postJson('/api/login', ['email' => 'jane@example.com', 'password' => 'newpassword123'])
+        $this->postJson('/api/login', ['email' => 'jane@example.com', 'password' => 'C0ncierge-Str0ng-77'])
             ->assertStatus(200);
     }
 
@@ -116,8 +116,8 @@ class PasswordResetTest extends TestCase
         $this->postJson('/api/reset-password', [
             'email' => 'jane@example.com',
             'code' => '000000',
-            'password' => 'newpassword123',
-            'password_confirmation' => 'newpassword123',
+            'password' => 'C0ncierge-Str0ng-77',
+            'password_confirmation' => 'C0ncierge-Str0ng-77',
         ])
             ->assertStatus(422)
             ->assertJson(['code' => 'EMAIL_CODE_MISMATCH']);
@@ -137,8 +137,8 @@ class PasswordResetTest extends TestCase
         $this->postJson('/api/reset-password', [
             'email' => 'jane@example.com',
             'code' => '482916',
-            'password' => 'newpassword123',
-            'password_confirmation' => 'newpassword123',
+            'password' => 'C0ncierge-Str0ng-77',
+            'password_confirmation' => 'C0ncierge-Str0ng-77',
         ])
             ->assertStatus(422)
             ->assertJson(['code' => 'EMAIL_CODE_EXPIRED']);
@@ -149,8 +149,8 @@ class PasswordResetTest extends TestCase
         $this->postJson('/api/reset-password', [
             'email' => 'jane@example.com',
             'code' => '482916',
-            'password' => 'newpassword123',
-            'password_confirmation' => 'newpassword123',
+            'password' => 'C0ncierge-Str0ng-77',
+            'password_confirmation' => 'C0ncierge-Str0ng-77',
         ])
             ->assertStatus(404)
             ->assertJson(['code' => 'PASSWORD_RESET_NONE']);
@@ -168,8 +168,8 @@ class PasswordResetTest extends TestCase
         $payload = [
             'email' => 'jane@example.com',
             'code' => '000000',
-            'password' => 'newpassword123',
-            'password_confirmation' => 'newpassword123',
+            'password' => 'C0ncierge-Str0ng-77',
+            'password_confirmation' => 'C0ncierge-Str0ng-77',
         ];
 
         for ($i = 0; $i < 4; $i++) {

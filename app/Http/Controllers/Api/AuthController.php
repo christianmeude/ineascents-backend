@@ -11,6 +11,7 @@ use App\Services\VerificationCodes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
 use OpenApi\Attributes as OAT;
 
@@ -71,7 +72,7 @@ class AuthController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
+            'password' => ['required', 'string', Password::min(12)->uncompromised()],
         ]);
 
         $user = User::create([

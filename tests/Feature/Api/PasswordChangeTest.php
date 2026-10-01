@@ -61,15 +61,15 @@ class PasswordChangeTest extends TestCase
         $this->postJson('/api/user/password/change', [
             'current_password' => 'oldpassword',
             'code' => '482916',
-            'password' => 'newpassword123',
-            'password_confirmation' => 'newpassword123',
+            'password' => 'C0ncierge-Str0ng-77',
+            'password_confirmation' => 'C0ncierge-Str0ng-77',
         ], $headers)
             ->assertStatus(200)
             ->assertJson(['code' => 'PASSWORD_CHANGED']);
 
         Auth::forgetGuards();
 
-        $this->postJson('/api/login', ['email' => $user->email, 'password' => 'newpassword123'])
+        $this->postJson('/api/login', ['email' => $user->email, 'password' => 'C0ncierge-Str0ng-77'])
             ->assertStatus(200);
 
         $this->postJson('/api/login', ['email' => $user->email, 'password' => 'oldpassword'])
@@ -90,8 +90,8 @@ class PasswordChangeTest extends TestCase
         $this->postJson('/api/user/password/change', [
             'current_password' => 'oldpassword',
             'code' => '482916',
-            'password' => 'newpassword123',
-            'password_confirmation' => 'newpassword123',
+            'password' => 'C0ncierge-Str0ng-77',
+            'password_confirmation' => 'C0ncierge-Str0ng-77',
         ], $current)->assertStatus(200);
 
         Auth::forgetGuards();
@@ -117,8 +117,8 @@ class PasswordChangeTest extends TestCase
         $this->postJson('/api/user/password/change', [
             'current_password' => 'nottheright one',
             'code' => '482916',
-            'password' => 'newpassword123',
-            'password_confirmation' => 'newpassword123',
+            'password' => 'C0ncierge-Str0ng-77',
+            'password_confirmation' => 'C0ncierge-Str0ng-77',
         ], $headers)
             ->assertStatus(422)
             ->assertJson(['code' => 'CURRENT_PASSWORD_WRONG']);
@@ -139,8 +139,8 @@ class PasswordChangeTest extends TestCase
         $this->postJson('/api/user/password/change', [
             'current_password' => 'oldpassword',
             'code' => '000000',
-            'password' => 'newpassword123',
-            'password_confirmation' => 'newpassword123',
+            'password' => 'C0ncierge-Str0ng-77',
+            'password_confirmation' => 'C0ncierge-Str0ng-77',
         ], $headers)
             ->assertStatus(422)
             ->assertJson(['code' => 'EMAIL_CODE_MISMATCH']);
@@ -161,8 +161,8 @@ class PasswordChangeTest extends TestCase
         $this->postJson('/api/user/password/change', [
             'current_password' => 'oldpassword',
             'code' => '482916',
-            'password' => 'newpassword123',
-            'password_confirmation' => 'newpassword123',
+            'password' => 'C0ncierge-Str0ng-77',
+            'password_confirmation' => 'C0ncierge-Str0ng-77',
         ], $headers)
             ->assertStatus(422)
             ->assertJson(['code' => 'EMAIL_CODE_EXPIRED']);
@@ -175,8 +175,8 @@ class PasswordChangeTest extends TestCase
         $this->postJson('/api/user/password/change', [
             'current_password' => 'oldpassword',
             'code' => '482916',
-            'password' => 'newpassword123',
-            'password_confirmation' => 'newpassword123',
+            'password' => 'C0ncierge-Str0ng-77',
+            'password_confirmation' => 'C0ncierge-Str0ng-77',
         ], $this->authHeaders($user))
             ->assertStatus(404)
             ->assertJson(['code' => 'PASSWORD_CHANGE_NONE']);
@@ -228,8 +228,8 @@ class PasswordChangeTest extends TestCase
         $payload = [
             'current_password' => 'oldpassword',
             'code' => '000000',
-            'password' => 'newpassword123',
-            'password_confirmation' => 'newpassword123',
+            'password' => 'C0ncierge-Str0ng-77',
+            'password_confirmation' => 'C0ncierge-Str0ng-77',
         ];
 
         for ($i = 0; $i < 4; $i++) {

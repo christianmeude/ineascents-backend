@@ -10,6 +10,7 @@ use App\Notifications\VerificationCode as VerificationCodeMail;
 use App\Services\VerificationCodes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Validation\Rules\Password;
 use OpenApi\Attributes as OAT;
 
 class PasswordResetController extends Controller
@@ -101,7 +102,7 @@ class PasswordResetController extends Controller
         $validated = $request->validate([
             'email' => 'required|email',
             'code' => 'required|string',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => ['required', 'string', Password::min(12)->uncompromised(), 'confirmed'],
         ]);
 
         $email = strtolower(trim($validated['email']));

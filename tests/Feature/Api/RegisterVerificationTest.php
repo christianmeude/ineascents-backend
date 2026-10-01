@@ -20,7 +20,7 @@ class RegisterVerificationTest extends TestCase
         $register = $this->postJson('/api/register', [
             'name' => 'New User',
             'email' => 'new@example.com',
-            'password' => 'password123',
+            'password' => 'C0ncierge-Str0ng-77',
         ]);
 
         $register->assertStatus(201)->assertJsonMissingPath('access_token');
@@ -35,7 +35,7 @@ class RegisterVerificationTest extends TestCase
 
         $blocked = $this->postJson('/api/login', [
             'email' => 'new@example.com',
-            'password' => 'password123',
+            'password' => 'C0ncierge-Str0ng-77',
         ]);
         $blocked->assertStatus(422)->assertJsonPath('code', 'EMAIL_NOT_VERIFIED');
 
@@ -49,7 +49,7 @@ class RegisterVerificationTest extends TestCase
 
         $login = $this->postJson('/api/login', [
             'email' => 'new@example.com',
-            'password' => 'password123',
+            'password' => 'C0ncierge-Str0ng-77',
         ]);
 
         $login->assertStatus(200)->assertJsonStructure(['access_token']);
@@ -62,7 +62,7 @@ class RegisterVerificationTest extends TestCase
         $this->postJson('/api/register', [
             'name' => 'New User',
             'email' => 'wrong@example.com',
-            'password' => 'password123',
+            'password' => 'C0ncierge-Str0ng-77',
         ])->assertStatus(201);
 
         $this->postJson('/api/register/verify', [
@@ -78,7 +78,7 @@ class RegisterVerificationTest extends TestCase
         $this->postJson('/api/register', [
             'name' => 'New User',
             'email' => 'twice@example.com',
-            'password' => 'password123',
+            'password' => 'C0ncierge-Str0ng-77',
         ])->assertStatus(201);
 
         $code = null;
@@ -111,12 +111,12 @@ class RegisterVerificationTest extends TestCase
     {
         $user = User::factory()->unverified()->create([
             'email' => 'legacy@example.com',
-            'password' => Hash::make('password123'),
+            'password' => Hash::make('C0ncierge-Str0ng-77'),
         ]);
 
         $this->postJson('/api/login', [
             'email' => 'legacy@example.com',
-            'password' => 'password123',
+            'password' => 'C0ncierge-Str0ng-77',
         ])->assertStatus(422)->assertJsonPath('code', 'EMAIL_NOT_VERIFIED');
 
         $migration = require database_path('migrations/2026_09_27_000001_grandfather_existing_email_verification.php');
@@ -126,7 +126,7 @@ class RegisterVerificationTest extends TestCase
 
         $this->postJson('/api/login', [
             'email' => 'legacy@example.com',
-            'password' => 'password123',
+            'password' => 'C0ncierge-Str0ng-77',
         ])->assertStatus(200)->assertJsonStructure(['access_token']);
     }
 
@@ -137,7 +137,7 @@ class RegisterVerificationTest extends TestCase
         $this->postJson('/api/register', [
             'name' => 'New User',
             'email' => 'resend@example.com',
-            'password' => 'password123',
+            'password' => 'C0ncierge-Str0ng-77',
         ])->assertStatus(201);
 
         $this->travel(61)->seconds();

@@ -9,6 +9,7 @@ use App\Services\VerificationCodes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Validation\Rules\Password;
 use OpenApi\Attributes as OAT;
 
 class PasswordController extends Controller
@@ -94,7 +95,7 @@ class PasswordController extends Controller
         $validated = $request->validate([
             'current_password' => 'required|string',
             'code' => 'required|string',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => ['required', 'string', Password::min(12)->uncompromised(), 'confirmed'],
         ]);
 
         if (! Hash::check($validated['current_password'], $user->password)) {

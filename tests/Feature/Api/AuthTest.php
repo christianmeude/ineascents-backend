@@ -16,7 +16,7 @@ class AuthTest extends TestCase
         $payload = [
             'name' => 'Test User',
             'email' => 'test@example.com',
-            'password' => 'password123',
+            'password' => 'C0ncierge-Str0ng-77',
         ];
 
         $response = $this->postJson('/api/register', $payload);
@@ -133,5 +133,29 @@ class AuthTest extends TestCase
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['email'])
             ->assertJsonMissingPath('access_token');
+    }
+
+    public function test_user_cannot_register_with_short_or_breached_password()
+    {
+        $this->postJson('/api/register', [
+            'name' => 'Weak User',
+            'email' => 'weak@example.com',
+            'password' => 'password123',
+        ])->assertStatus(422)->assertJsonValidationErrors(['password']);
+
+        // Deterministic breach rejection: fake the HIBP k-anonymity range
+        // response to contain this password's suffix (fails closed in test,
+        // live API verified separately during development).
+        $breached = 'newpassword123'; // 14 chars but in breach corpora
+        $sha = strtoupper(sha1($breached));
+        \Illuminate\Support\Facades\Http::fake([
+            'api.pwnedpasswords.com/*' => \Illuminate\Support\Facades\Http::response(substr($sha, 5) . ":42\n"),
+        ]);
+
+        $this->postJson('/api/register', [
+            'name' => 'Breached User',
+            'email' => 'breached@example.com',
+            'password' => $breached,
+        ])->assertStatus(422)->assertJsonValidationErrors(['password']);
     }
 }
