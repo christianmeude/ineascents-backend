@@ -1,0 +1,10 @@
+name: ineascents-mailpit
+
+services:
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: ineascents-mailpit
+    restart: unless-stopped
+    ports:
+      - "1025:1025" # SMTP — matches backend MAIL_HOST=127.0.0.1 MAIL_PORT=1025
+      - "8025:8025" # Web UI — http://127.0.0.1:8025
