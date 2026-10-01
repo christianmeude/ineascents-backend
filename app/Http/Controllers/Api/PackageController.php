@@ -37,19 +37,19 @@ class PackageController extends Controller
     )]
     public function index(Request $request)
     {
-        $data = Cache::remember('catalog:packages:index', 300, function () use ($request) {
+        $json = Cache::remember('catalog:packages:index', 300, function () use ($request) {
             $packages = Package::with('scents')->get();
 
-            return PackageResource::collection($packages)->toResponse($request)->getData(true);
+            return PackageResource::collection($packages)->toResponse($request)->getContent();
         });
 
-        $etag = md5(json_encode($data));
+        $etag = md5($json);
 
         if (trim((string) $request->header('If-None-Match'), '"') === $etag) {
             return response(null, 304)->header('ETag', $etag);
         }
 
-        return response()->json($data)->header('ETag', $etag);
+        return response($json, 200, ['Content-Type' => 'application/json'])->header('ETag', $etag);
     }
 
     #[OAT\Get(
@@ -88,18 +88,18 @@ class PackageController extends Controller
     public function show(Request $request, Package $package)
     {
         $key = "catalog:packages:{$package->id}";
-        $data = Cache::remember($key, 300, function () use ($request, $package) {
+        $json = Cache::remember($key, 300, function () use ($request, $package) {
             $package->load('scents');
 
-            return ['data' => (new PackageResource($package))->toArray($request)];
+            return (new PackageResource($package))->toResponse($request)->getContent();
         });
 
-        $etag = md5(json_encode($data));
+        $etag = md5($json);
 
         if (trim((string) $request->header('If-None-Match'), '"') === $etag) {
             return response(null, 304)->header('ETag', $etag);
         }
 
-        return response()->json($data)->header('ETag', $etag);
+        return response($json, 200, ['Content-Type' => 'application/json'])->header('ETag', $etag);
     }
 }
