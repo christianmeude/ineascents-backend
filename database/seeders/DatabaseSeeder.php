@@ -72,39 +72,5 @@ class DatabaseSeeder extends Seeder
         // 4. Attach Scents to Package — the frozen 4 included scents.
         // sync (not attach): re-runs converge instead of stacking links.
         $package->scents()->sync([$scents[0]->id, $scents[1]->id, $scents[2]->id, $scents[3]->id]);
-
-        // 5. Create some Bookings — keyed by reference so re-runs heal the
-        // package link instead of failing unique or cloning rows.
-        $booking1 = \App\Models\Booking::updateOrCreate(
-            ['booking_reference' => 'BOOKING-TEST01'],
-            [
-            'package_id' => $package->id,
-            'customer_name' => 'Alice Wonderland',
-            'customer_email' => 'alice@example.com',
-            'pax' => 50,
-            'event_date' => now()->addDays(5)->format('Y-m-d'),
-            'event_time' => '14:00:00',
-            'venue_address' => 'Scent Studio A',
-            'status' => 'Confirmed',
-            'payment_method' => 'online',
-            'total_price' => $tiers[50],
-        ]);
-        $booking1->scents()->syncWithoutDetaching([$scents[0]->id, $scents[1]->id]);
-
-        $booking2 = \App\Models\Booking::updateOrCreate(
-            ['booking_reference' => 'BOOKING-TEST02'],
-            [
-            'package_id' => $package->id,
-            'customer_name' => 'Bob Builder',
-            'customer_email' => 'bob@example.com',
-            'pax' => 70,
-            'event_date' => now()->addDays(10)->format('Y-m-d'),
-            'event_time' => '10:00:00',
-            'venue_address' => 'Scent Studio B',
-            'status' => 'Pending',
-            'payment_method' => 'cash',
-            'total_price' => $tiers[70],
-        ]);
-        $booking2->scents()->syncWithoutDetaching([$scents[0]->id]);
     }
 }
