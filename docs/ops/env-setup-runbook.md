@@ -141,3 +141,10 @@ Local PHP ships without a CA bundle, so TLS to PayMongo/Supabase fails
 3. Vercel Production and Preview builds both use `API_URL=https://ineascents.onrender.com`.
 4. `php artisan migrate` against prod only after local verification (no remote checkpoint).
 5. No `FRONTEND_URL`/`DATABASE_URL`/PayMongo value appears in more than one env.
+
+---
+
+## PITR + breach response
+
+See `docs/ops/pitr-breach-runbook.md` for PITR restore-point verification and
+the ordered breach runbook (DPO contact + NPC notification).
