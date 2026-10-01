@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PackageResource;
 use App\Models\Package;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use OpenApi\Attributes as OAT;
 
 #[OAT\Tag(
@@ -32,11 +35,21 @@ class PackageController extends Controller
             type: 'object'
         )
     )]
-    public function index()
+    public function index(Request $request)
     {
-        $packages = Package::with('scents')->get();
+        $data = Cache::remember('catalog:packages:index', 300, function () use ($request) {
+            $packages = Package::with('scents')->get();
 
-        return \App\Http\Resources\PackageResource::collection($packages);
+            return PackageResource::collection($packages)->toResponse($request)->getData(true);
+        });
+
+        $etag = md5(json_encode($data));
+
+        if (trim((string) $request->header('If-None-Match'), '"') === $etag) {
+            return response(null, 304)->header('ETag', $etag);
+        }
+
+        return response()->json($data)->header('ETag', $etag);
     }
 
     #[OAT\Get(
@@ -72,10 +85,21 @@ class PackageController extends Controller
             type: 'object'
         )
     )]
-    public function show(Package $package)
+    public function show(Request $request, Package $package)
     {
-        $package->load('scents');
+        $key = "catalog:packages:{$package->id}";
+        $data = Cache::remember($key, 300, function () use ($request, $package) {
+            $package->load('scents');
 
-        return new \App\Http\Resources\PackageResource($package);
+            return ['data' => (new PackageResource($package))->toArray($request)];
+        });
+
+        $etag = md5(json_encode($data));
+
+        if (trim((string) $request->header('If-None-Match'), '"') === $etag) {
+            return response(null, 304)->header('ETag', $etag);
+        }
+
+        return response()->json($data)->header('ETag', $etag);
     }
 }

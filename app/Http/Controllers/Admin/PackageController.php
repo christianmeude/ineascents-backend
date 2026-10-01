@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Package;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 
 class PackageController extends Controller
@@ -85,6 +86,8 @@ class PackageController extends Controller
 
         Package::create($validated);
 
+        Cache::forget('catalog:packages:index');
+
         return redirect()->route('admin.packages.index')->with('success', 'Package created successfully.');
     }
 
@@ -124,6 +127,9 @@ class PackageController extends Controller
 
         $package->update($validated);
 
+        Cache::forget('catalog:packages:index');
+        Cache::forget("catalog:packages:{$package->id}");
+
         return redirect()->route('admin.packages.index')->with('success', 'Package updated successfully.');
     }
 
@@ -133,6 +139,9 @@ class PackageController extends Controller
     public function destroy(Package $package)
     {
         $package->delete();
+
+        Cache::forget('catalog:packages:index');
+        Cache::forget("catalog:packages:{$package->id}");
 
         return redirect()->route('admin.packages.index')->with('success', 'Package deleted successfully.');
     }
