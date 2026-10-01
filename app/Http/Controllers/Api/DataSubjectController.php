@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Actions\EraseUserData;
 use App\Actions\ExportUserData;
 use App\Http\Controllers\Controller;
+use App\Models\AuditLog;
 use Illuminate\Http\Request;
 use OpenApi\Attributes as OAT;
 
@@ -26,7 +27,17 @@ class DataSubjectController extends Controller
     {
         abort_if($request->user()->is_admin, 403, 'Admins cannot use data-rights endpoints.');
 
-        return response()->json($export->execute($request->user(), $request));
+        $data = $export->execute($request->user(), $request);
+
+        AuditLog::create([
+            'user_id' => $request->user()->id,
+            'action' => 'dsar.exported',
+            'auditable_type' => $request->user()::class,
+            'auditable_id' => $request->user()->id,
+            'ip' => $request->ip(),
+        ]);
+
+        return response()->json($data);
     }
 
     #[OAT\Delete(
@@ -41,7 +52,19 @@ class DataSubjectController extends Controller
     {
         abort_if($request->user()->is_admin, 403, 'Admins cannot use data-rights endpoints.');
 
+        $userId = $request->user()->id;
+        $userClass = $request->user()::class;
+        $ip = $request->ip();
+
         $erase->execute($request->user());
+
+        AuditLog::create([
+            'user_id' => $userId,
+            'action' => 'dsar.erased',
+            'auditable_type' => $userClass,
+            'auditable_id' => $userId,
+            'ip' => $ip,
+        ]);
 
         return response()->json(['message' => 'Your account and personal data have been erased.']);
     }

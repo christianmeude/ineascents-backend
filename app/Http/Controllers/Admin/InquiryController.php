@@ -7,6 +7,7 @@ use App\Enums\InquiryStatus;
 use App\Enums\PaymentMethod;
 use App\Exceptions\PaymentLinkFailedException;
 use App\Http\Controllers\Controller;
+use App\Models\AuditLog;
 use App\Models\Booking;
 use App\Models\Inquiry;
 use App\Models\Package;
@@ -56,8 +57,16 @@ class InquiryController extends Controller
         ]);
     }
 
-    public function show(Inquiry $inquiry)
+    public function show(Request $request, Inquiry $inquiry)
     {
+        AuditLog::create([
+            'user_id' => auth()->id(),
+            'action' => 'inquiry.viewed',
+            'auditable_type' => Inquiry::class,
+            'auditable_id' => $inquiry->id,
+            'ip' => $request->ip(),
+        ]);
+
         return Inertia::render('Inquiries/Show', [
             'inquiry' => $inquiry,
             'packages' => Package::all(['id', 'name']),
