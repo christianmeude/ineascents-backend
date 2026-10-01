@@ -26,6 +26,7 @@ Route::post('/inquiries', [\App\Http\Controllers\Api\InquiryController::class, '
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
+    Route::post('/logout', [AuthController::class, 'logout'])->middleware('throttle:10,1');
     Route::put('/user', [ProfileController::class, 'update']);
     Route::post('/user/email/verify', [ProfileController::class, 'verifyEmail']);
     Route::post('/user/email/resend', [ProfileController::class, 'resendEmailCode']);

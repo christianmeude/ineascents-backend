@@ -297,10 +297,29 @@ class AuthController extends Controller
     {
         $token = $user->createToken('auth_token')->plainTextToken;
 
+        // A23: cap live sessions at 5 — prune oldest beyond the newest five.
+        $keep = $user->tokens()->latest('id')->take(5)->pluck('id');
+        $user->tokens()->whereNotIn('id', $keep)->delete();
+
         return response()->json([
             'user' => new \App\Http\Resources\UserResource($user),
             'access_token' => $token,
             'token_type' => 'Bearer',
         ]);
+    }
+
+    #[OAT\Post(
+        path: '/api/logout',
+        summary: 'Revoke the current session token',
+        tags: ['Auth'],
+        security: [['sanctum' => []]]
+    )]
+    #[OAT\Response(response: 200, description: 'Logged out')]
+    #[OAT\Response(response: 401, description: 'Unauthenticated')]
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json(['message' => 'Logged out.']);
     }
 }
