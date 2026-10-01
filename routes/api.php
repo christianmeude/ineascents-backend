@@ -10,14 +10,14 @@ use App\Http\Controllers\Api\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::post('/register', [AuthController::class, 'register']);
+Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:5,1');
 Route::post('/register/verify', [AuthController::class, 'verifyRegistration'])->middleware('throttle:10,1');
 Route::post('/register/resend', [AuthController::class, 'resendRegistrationCode'])->middleware('throttle:10,1');
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
 Route::post('/forgot-password', [PasswordResetController::class, 'request'])->middleware('throttle:10,1');
 Route::post('/reset-password', [PasswordResetController::class, 'reset'])->middleware('throttle:10,1');
 
-Route::get('/availability', [AvailabilityController::class, 'index']);
+Route::get('/availability', [AvailabilityController::class, 'index'])->middleware('throttle:30,1');
 
 Route::get('/packages', [PackageController::class, 'index']);
 Route::get('/packages/{package}', [PackageController::class, 'show']);
@@ -33,7 +33,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/user/password/change', [PasswordController::class, 'change']);
 
     Route::get('/bookings', [BookingController::class, 'index']);
-    Route::post('/bookings', [BookingController::class, 'store']);
+    Route::post('/bookings', [BookingController::class, 'store'])->middleware('throttle:10,1');
 });
 
 // Ping endpoint for health checks (decoupled CI test)
