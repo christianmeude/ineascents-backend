@@ -17,7 +17,7 @@ class BookingController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Booking::with('package')->latest();
+        $query = Booking::with(['package', 'feedbacks'])->latest();
 
         if ($request->filled('search')) {
             $search = $request->search;

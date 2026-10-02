@@ -109,4 +109,9 @@ class Booking extends Model
     {
         return $this->belongsTo(Inquiry::class);
     }
+
+    public function feedbacks()
+    {
+        return $this->hasMany(Feedback::class);
+    }
 }

@@ -106,6 +106,19 @@ const formattedPrice = computed(() => {
                         <dt class="text-xs font-bold tracking-widest uppercase text-brand-muted dark:text-brand-cream/50 mb-1">Consented at</dt>
                         <dd class="text-lg font-medium text-brand-primary dark:text-brand-cream">{{ booking.consented_at }}</dd>
                     </div>
+
+                    <!-- Linked customer feedback (read-only) -->
+                    <div v-if="booking.feedbacks?.length" class="sm:col-span-2 h-px bg-brand-primary/10 dark:bg-brand-dark-border my-2"></div>
+                    <div v-if="booking.feedbacks?.length" class="sm:col-span-2 flex flex-col gap-2">
+                        <dt class="text-xs font-bold tracking-widest uppercase text-brand-muted dark:text-brand-cream/50 mb-1">Customer feedback</dt>
+                        <dd class="flex flex-col gap-3">
+                            <div v-for="fb in booking.feedbacks" :key="fb.id" class="rounded-xl bg-white dark:bg-brand-dark-base border border-brand-primary/5 dark:border-brand-dark-border p-4">
+                                <span class="text-amber-500 tracking-widest text-sm">{{ '★'.repeat(fb.stars) }}{{ '☆'.repeat(5 - fb.stars) }}</span>
+                                <span class="ml-2 text-sm font-medium text-brand-primary dark:text-brand-cream">{{ fb.stars }}/5</span>
+                                <p v-if="fb.text" class="mt-1 text-sm text-brand-primary dark:text-brand-cream whitespace-pre-wrap">{{ fb.text }}</p>
+                            </div>
+                        </dd>
+                    </div>
                 </dl>
             </div>
         </div>

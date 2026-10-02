@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\CalendarController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\FeedbackController;
 use App\Http\Controllers\Admin\PackageController;
 use App\Http\Controllers\Admin\ScentController;
 use App\Http\Controllers\Admin\ProfileController;
@@ -28,6 +29,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::post('customers/link', [CustomerController::class, 'link'])->name('customers.link');
     Route::post('customers/unlink', [CustomerController::class, 'unlink'])->name('customers.unlink');
     Route::resource('inquiries', InquiryController::class)->only(['index', 'show', 'update']);
+    Route::resource('feedbacks', FeedbackController::class)->only(['index', 'show']);
     Route::post('inquiries/{inquiry}/promote', [InquiryController::class, 'promote'])->name('inquiries.promote');
     Route::patch('bookings/{booking}/approve', [BookingController::class, 'approve'])->name('bookings.approve');
 
