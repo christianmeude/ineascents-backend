@@ -111,6 +111,11 @@ class BookingController extends Controller
 
     public function approve(Booking $booking)
     {
+        // Completed is terminal: approving must never resurrect it to Confirmed.
+        if ($booking->status === \App\Enums\BookingStatus::Completed) {
+            return back()->with('success', 'Booking is already completed.');
+        }
+
         // Capitalized because the validation rules in store/update use Title Case
         $booking->update(['status' => \App\Enums\BookingStatus::Confirmed->value]);
 

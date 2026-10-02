@@ -2,7 +2,6 @@
 
 use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -22,8 +21,7 @@ return new class extends Migration
 
     public function down(): void
     {
-        DB::table('bookings')
-            ->where('status', 'Completed')
-            ->update(['status' => 'Confirmed']);
+        // Irreversible backfill: down is intentionally a no-op so
+        // legitimately completed rows are never mass-reverted.
     }
 };

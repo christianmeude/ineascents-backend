@@ -44,14 +44,14 @@ class DashboardMetrics
     public function getTotalRevenue(?Carbon $startDate): float
     {
         return (float) $this->getBaseQuery($startDate)
-            ->where('status', BookingStatus::Confirmed->value)
+            ->whereIn('status', [BookingStatus::Confirmed->value, BookingStatus::Completed->value])
             ->sum('total_price');
     }
 
     public function getConfirmedEvents(?Carbon $startDate): int
     {
         return $this->getBaseQuery($startDate)
-            ->where('status', BookingStatus::Confirmed->value)
+            ->whereIn('status', [BookingStatus::Confirmed->value, BookingStatus::Completed->value])
             ->count();
     }
 

@@ -39,7 +39,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/bookings', [BookingController::class, 'index']);
     Route::post('/bookings', [BookingController::class, 'store'])->middleware('throttle:10,1');
-    Route::post('/bookings/{booking}/complete', [BookingController::class, 'complete']);
+    Route::post('/bookings/{booking}/complete', [BookingController::class, 'complete'])->middleware('throttle:10,1');
 
     // A19: data-subject rights.
     Route::get('/user/export', [DataSubjectController::class, 'export'])->middleware('throttle:10,1');

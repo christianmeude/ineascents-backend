@@ -57,7 +57,7 @@ class PaymentController extends Controller
             return $event;
         });
 
-        $revenue = (float) Booking::where('status', BookingStatus::Confirmed->value)->sum('total_price');
+        $revenue = (float) Booking::whereIn('status', [BookingStatus::Confirmed->value, BookingStatus::Completed->value])->sum('total_price');
 
         return Inertia::render('Payments/Index', [
             'bookings' => $bookings->paginate(10, ['*'], 'bookings')->withQueryString(),

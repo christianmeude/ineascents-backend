@@ -131,6 +131,27 @@ class BookingController extends Controller
         return new \App\Http\Resources\BookingResource($booking->load(['package', 'scents']));
     }
 
+    #[OAT\Post(
+        path: '/api/bookings/{booking}/complete',
+        summary: 'Mark a booking completed',
+        description: 'Idempotent Confirmed → Completed transition once the event date has passed (Asia/Manila, server wins)',
+        security: [['sanctum' => []]],
+        tags: ['Bookings']
+    )]
+    #[OAT\Response(
+        response: 200,
+        description: 'Booking completed (or already completed)',
+        content: new OAT\JsonContent(
+            properties: [
+                new OAT\Property(
+                    property: 'data',
+                    ref: '#/components/schemas/Booking'
+                )
+            ],
+            type: 'object'
+        )
+    )]
+    #[OAT\Response(response: 422, description: 'Not confirmable (wrong status or event date not passed)')]
     public function complete(Request $request, Booking $booking)
     {
         $user = $request->user();

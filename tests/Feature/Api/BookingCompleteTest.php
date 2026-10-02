@@ -80,6 +80,18 @@ class BookingCompleteTest extends TestCase
         $this->assertEquals('Completed', $booking->refresh()->status->value);
     }
 
+    public function test_complete_rejects_same_day_event_date(): void
+    {
+        $user = User::factory()->create();
+        $today = Carbon::now('Asia/Manila')->toDateString();
+        $booking = $this->makeBooking($user, 'Confirmed', $today);
+
+        $this->actingAs($user, 'sanctum')
+            ->postJson("/api/bookings/{$booking->id}/complete")
+            ->assertStatus(422);
+        $this->assertEquals('Confirmed', $booking->refresh()->status->value);
+    }
+
     public function test_complete_rejects_pending_and_cancelled(): void
     {
         $user = User::factory()->create();
