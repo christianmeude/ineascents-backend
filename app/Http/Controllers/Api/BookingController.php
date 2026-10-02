@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\BookingStatus;
 use App\Enums\PaymentMethod;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\LegalController;
@@ -128,5 +129,33 @@ class BookingController extends Controller
         );
 
         return new \App\Http\Resources\BookingResource($booking->load(['package', 'scents']));
+    }
+
+    public function complete(Request $request, Booking $booking)
+    {
+        $user = $request->user();
+
+        if (! $user->is_admin && (int) $booking->user_id !== (int) $user->id) {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+
+        if ($booking->status === BookingStatus::Completed) {
+            return new \App\Http\Resources\BookingResource($booking->load(['package', 'scents']));
+        }
+
+        if ($booking->status !== BookingStatus::Confirmed) {
+            return response()->json(['message' => 'Only confirmed bookings can be completed.'], 422);
+        }
+
+        $today = \Carbon\Carbon::now('Asia/Manila')->toDateString();
+        $eventDate = \Carbon\Carbon::parse($booking->event_date)->toDateString();
+
+        if ($eventDate >= $today) {
+            return response()->json(['message' => 'Booking event date has not passed.'], 422);
+        }
+
+        $booking->update(['status' => BookingStatus::Completed->value]);
+
+        return new \App\Http\Resources\BookingResource($booking->refresh()->load(['package', 'scents']));
     }
 }

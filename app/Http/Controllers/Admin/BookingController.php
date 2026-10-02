@@ -52,7 +52,7 @@ class BookingController extends Controller
             'payment_method' => ['required', Rule::in([
                 \App\Enums\PaymentMethod::CASH->value,
             ])],
-            'status' => 'required|string|in:Confirmed,Pending,Cancelled',
+            'status' => 'required|string|in:Confirmed,Pending,Cancelled,Completed',
             'total_price' => 'nullable|numeric|min:0',
             'notes' => 'nullable|string',
         ]);
@@ -90,7 +90,7 @@ class BookingController extends Controller
             'payment_method' => ['required', Rule::in([
                 \App\Enums\PaymentMethod::CASH->value,
             ])],
-            'status' => 'required|string|in:Confirmed,Pending,Cancelled',
+            'status' => 'required|string|in:Confirmed,Pending,Cancelled,Completed',
             'total_price' => 'nullable|numeric|min:0',
             'notes' => 'nullable|string',
         ]);
