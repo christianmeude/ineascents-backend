@@ -93,5 +93,12 @@ class PackageApiTest extends TestCase
                 \Illuminate\Support\Facades\Storage::disk('public')->url('packages/g1.jpg'),
                 'https://cdn.example.com/g2.jpg',
             ]);
+
+        $index = $this->getJson('/api/packages');
+
+        $index->assertStatus(200)
+            ->assertJsonFragment([
+                \Illuminate\Support\Facades\Storage::disk('public')->url('packages/cover.jpg'),
+            ]);
     }
 }
