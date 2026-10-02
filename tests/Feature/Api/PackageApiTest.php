@@ -73,4 +73,25 @@ class PackageApiTest extends TestCase
             ->assertValidRequest()
             ->assertValidResponse(404);
     }
+
+    public function test_images_served_as_absolute_urls(): void
+    {
+        $package = Package::create([
+            'name' => 'Photo Shoot',
+            'price' => 99.99,
+            'images' => ['packages/cover.jpg'],
+            'gallery_images' => ['packages/g1.jpg', 'https://cdn.example.com/g2.jpg'],
+        ]);
+
+        $response = $this->getJson('/api/packages/'.$package->id);
+
+        $response->assertStatus(200)
+            ->assertJsonPath('data.images', [
+                \Illuminate\Support\Facades\Storage::disk('public')->url('packages/cover.jpg'),
+            ])
+            ->assertJsonPath('data.gallery_images', [
+                \Illuminate\Support\Facades\Storage::disk('public')->url('packages/g1.jpg'),
+                'https://cdn.example.com/g2.jpg',
+            ]);
+    }
 }
