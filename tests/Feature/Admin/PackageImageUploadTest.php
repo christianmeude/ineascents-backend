@@ -15,7 +15,7 @@ class PackageImageUploadTest extends TestCase
 
     public function test_admin_upload_persists_file_and_api_serves_absolute_url(): void
     {
-        Storage::fake('public');
+        Storage::fake('public', ['url' => 'http://localhost/storage']);
         $admin = User::factory()->create(['is_admin' => true]);
         $package = Package::create(['name' => 'Shoot', 'price' => 100]);
 
@@ -30,10 +30,15 @@ class PackageImageUploadTest extends TestCase
 
         $stored = $package->fresh()->images;
         $this->assertCount(1, $stored);
+        $this->assertStringStartsNotWith('http', $stored[0]);
         Storage::disk('public')->assertExists($stored[0]);
 
         $this->getJson('/api/packages/'.$package->id)
             ->assertStatus(200)
             ->assertJsonPath('data.images', [Storage::disk('public')->url($stored[0])]);
+
+        $emitted = $this->getJson('/api/packages/'.$package->id)->json('data.images.0');
+        $this->assertStringStartsWith('http', $emitted);
+        $this->assertStringContainsString('/storage/', $emitted);
     }
 }
