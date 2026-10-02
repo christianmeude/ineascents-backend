@@ -115,6 +115,18 @@ ALTER TABLE public.bookings ENABLE ROW LEVEL SECURITY;
 ## Local dev
 
 - Backend: `php artisan serve` (or `composer dev`), `php artisan queue:listen`, `npm run dev`.
+- Mobile web (pinned port): `flutter run -d chrome --web-port=62409` — the port
+  must stay fixed; the landing "Book in App" link and local API CORS setup
+  assume it. Debug `API_URL` fallback is `http://127.0.0.1:8080`
+  (`core_providers.dart`); release requires `--dart-define=API_URL=…`.
+- Landing: `npm run dev` (typically http://localhost:5173) with
+  `VITE_FRONTEND_URL=http://localhost:62409` in `.env.local`.
+- Uploaded images: `composer setup` runs `php artisan storage:link --force`.
+  If `/storage/*` 404s locally, check `public/storage` is a symlink — a stray
+  empty directory of the same name blocks link creation; delete it and re-run.
+  Package images are served to the app via the CORS-enabled
+  `GET /api/packages/{package}/images/{collection}/{index}` endpoint
+  (see `docs/MOBILE_CONTRACT.md`), never raw `/storage/…` URLs.
 
 ### PHP CA bundle (Windows, machine-only state)
 Local PHP ships without a CA bundle, so TLS to PayMongo/Supabase fails
