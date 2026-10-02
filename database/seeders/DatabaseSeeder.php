@@ -38,6 +38,10 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Clinique Happy for Men Cologne Spray', 'category' => 'men', 'image_url' => 'clinique-happy.png', 'description' => 'Crisp citrus uplift for men.'],
         ];
 
+        // Prune pre-promo rows: updateOrCreate by name never deletes,
+        // so remove anything outside the canonical 8 before sync.
+        \App\Models\Scent::whereNotIn('name', array_column($scentsData, 'name'))->delete();
+
         $scents = [];
         foreach ($scentsData as $data) {
             $scents[] = \App\Models\Scent::updateOrCreate(
@@ -63,7 +67,7 @@ class DatabaseSeeder extends Seeder
                 'price' => min($tiers),
                 'inclusions' => [
                     'Featuring your logo and a hemp cord',
-                    '4 inspired scents',
+                    '8 inspired scents',
                     'Perfume Bar set up',
                     'Claim Stub',
                     'Duration: 3 hrs to 4 hrs',
