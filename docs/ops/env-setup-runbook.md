@@ -114,10 +114,10 @@ ALTER TABLE public.bookings ENABLE ROW LEVEL SECURITY;
 
 ## Local dev
 
-- Backend: `php artisan serve` (or `composer dev`), `php artisan queue:listen`, `npm run dev`.
+- Backend: `php artisan serve --port=8080` (or `composer dev`), `php artisan queue:listen`, `npm run dev`.
 - Mobile web (pinned port): `flutter run -d chrome --web-port=62409` — the port
-  must stay fixed; the landing "Book in App" link and local API CORS setup
-  assume it. Debug `API_URL` fallback is `http://127.0.0.1:8080`
+  must stay fixed; the landing "Book in App" link assumes it. (Local API CORS
+  is port-agnostic via `CORS_ALLOWED_ORIGIN_PATTERNS` in `.env.example`.) Debug `API_URL` fallback is `http://127.0.0.1:8080`
   (`core_providers.dart`); release requires `--dart-define=API_URL=…`.
 - Landing: `npm run dev` (typically http://localhost:5173) with
   `VITE_FRONTEND_URL=http://localhost:62409` in `.env.local`.
