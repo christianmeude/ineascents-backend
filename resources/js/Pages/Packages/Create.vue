@@ -245,86 +245,42 @@ const submit = () => {
                             <!-- App UI Content -->
                             <div class="flex-1 bg-white dark:bg-brand-dark-surface rounded-[32px] overflow-hidden flex flex-col text-sm pb-16 relative">
                                 
-                                <!-- App Header -->
-                                <div class="pt-8 pb-3 px-4 flex items-center justify-between border-b border-gray-100">
-                                    <div class="text-gray-400">&larr;</div>
-                                    <div class="flex-1 px-3">
-                                        <div class="bg-gray-100 rounded-full h-8 flex items-center px-3">
-                                            <span class="text-gray-400 text-xs text-center w-full">Search "Perfume" here</span>
-                                        </div>
-                                    </div>
-                                    <div class="flex gap-2 text-gray-400">
-                                        <span class="text-xs">&#128172;</span>
-                                        <span class="text-xs">&#128197;</span>
-                                    </div>
+                                <!-- Screen header: mirrors packages screen (no app bar) -->
+                                <div class="pt-8 pb-2 px-4 bg-[#fdf4f5] dark:bg-brand-dark">
+                                    <div class="text-2xl leading-tight text-brand-primary dark:text-brand-cream" style="font-family: 'Great Vibes', cursive;">Our Collections</div>
+                                    <div class="text-[11px] text-brand-muted dark:text-brand-cream/70">Discover your perfect scent.</div>
                                 </div>
 
-                                <!-- Scrollable App Content -->
-                                <div class="flex-1 overflow-y-auto pb-6 relative">
-                                    
-                                    <!-- Image Preview Slider -->
-                                    <div class="relative h-48 bg-[#fdf4f5] w-full flex items-center justify-center overflow-hidden">
-                                        <!-- Top tags -->
-                                        <div class="absolute top-3 left-3 bg-brand-primary text-white text-xs px-2 py-1 rounded-full z-10">Massage</div>
-                                        <div class="absolute top-3 right-3 bg-white dark:bg-brand-dark-surface/80 text-brand-primary dark:text-brand-cream text-xs px-2 py-1 rounded-full z-10 backdrop-blur-sm">Add to Checklist</div>
+                                <!-- Scrollable App Content: mirrors packages screen -->
+                                <div class="flex-1 overflow-y-auto pb-6 px-3 pt-1 bg-[#fdf4f5] dark:bg-brand-dark">
 
-                                        <img alt="Image" v-if="imagePreviews[0]" :src="imagePreviews[0]" class="w-full h-full object-cover" />
-                                        <div v-else class="text-[#c4acac] text-xs">No image</div>
-                                        
-                                        <!-- Indicators -->
-                                        <div class="absolute bottom-3 inset-x-0 flex justify-center gap-1">
-                                            <div v-for="(_, i) in imagePreviews" :key="i" class="w-1.5 h-1.5 rounded-full" :class="imagePreviews[i] ? 'bg-white dark:bg-brand-dark-surface' : 'bg-white dark:bg-brand-dark-surface/50'"></div>
+                                    <!-- Offering hero -->
+                                    <div class="bg-white dark:bg-brand-dark-surface rounded-[20px] shadow flex flex-row overflow-hidden">
+                                        <div class="w-[132px] h-[200px] flex-shrink-0 bg-[#f6e8ea] dark:bg-brand-dark flex items-center justify-center overflow-hidden">
+                                            <img alt="Package image" v-if="imagePreviews[0]" :src="imagePreviews[0]" class="w-full h-full object-cover" />
+                                            <div v-else class="w-10 h-10 rounded-full bg-[#e9d5d8] text-brand-primary flex items-center justify-center font-semibold text-lg">{{ (form.name || 'P').charAt(0).toUpperCase() }}</div>
+                                        </div>
+                                        <div class="flex-1 p-3 flex flex-col justify-center min-w-0">
+                                            <div class="font-semibold text-[17px] leading-snug text-brand-primary dark:text-brand-cream" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">{{ form.name || 'Package Name' }}</div>
+                                            <div class="text-sm text-brand-muted dark:text-brand-cream/70 mt-1">Starting at &#8369;{{ ((startsAt !== null ? startsAt : parseFloat(form.price)) || 0).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) }}</div>
+                                            <div class="text-xs text-brand-muted dark:text-brand-cream/70 mt-1" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">{{ [...form.inclusions.filter(Boolean), ...form.freebies.filter(Boolean)].slice(0, 2).join(' · ') || form.description || '' }}</div>
                                         </div>
                                     </div>
 
-                                    <!-- Content Details -->
-                                    <div class="p-4 text-brand-primary dark:text-brand-cream">
-                                        <h4 class="font-bold text-lg mb-1">{{ form.name || 'Package Name' }}</h4>
-                                        <div class="flex items-center text-xs text-brand-muted dark:text-brand-cream/70 mb-3">
-                                            <span class="text-yellow-400 mr-1">&#9733;</span> 4.5 <span class="ml-1">(232 reviews)</span>
+                                    <!-- Pax Choices -->
+                                    <div class="mt-4 mb-2 font-semibold text-brand-primary dark:text-brand-cream">Choose your Pax Choice</div>
+                                    <div v-for="(tier, i) in validTiers(form.tiers)" :key="i" class="bg-white dark:bg-brand-dark-surface rounded-2xl shadow-sm px-3 py-2.5 mb-2 flex items-center justify-between">
+                                        <div class="min-w-0">
+                                            <div class="text-sm font-medium text-brand-primary dark:text-brand-cream">{{ tier.pax }} Pax Choice</div>
+                                            <div class="text-xs text-brand-muted dark:text-brand-cream/70" v-if="String(tier.price).trim() !== ''">&#8369;{{ parseFloat(tier.price).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) }}</div>
                                         </div>
-
-                                        <p class="text-xs text-brand-muted dark:text-brand-cream/70 mb-4 min-h-[40px]">
-                                            {{ form.description || 'Description of the package will appear here. It offers a premium perfume experience.' }}
-                                        </p>
-
-                                        <div class="mb-4">
-                                            <strong class="text-xs mb-1 block">Includes:</strong>
-                                            <ul class="list-disc pl-4 text-xs text-brand-muted dark:text-brand-cream/70">
-                                                <li v-for="(inc, i) in form.inclusions.filter(Boolean)" :key="i">{{ inc }}</li>
-                                                <li v-if="!form.inclusions.filter(Boolean).length">No inclusions listed</li>
-                                            </ul>
-                                        </div>
-
-                                        <div class="mb-4">
-                                            <strong class="text-xs mb-1 block">Pax Pricing:</strong>
-                                            <ul class="list-disc pl-4 text-xs text-brand-muted dark:text-brand-cream/70">
-                                                <li v-for="(tier, i) in validTiers(form.tiers)" :key="i">
-                                                    {{ tier.pax }} pax<template v-if="String(tier.price).trim() !== ''"> — &#8369;{{ parseFloat(tier.price).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) }}</template>
-                                                </li>
-                                                <li v-if="!validTiers(form.tiers).length">No prices listed</li>
-                                            </ul>
-                                        </div>
-
-                                        <div class="mb-4" v-if="form.freebies.filter(Boolean).length">
-                                            <strong class="text-xs mb-1 block">Freebies:</strong>
-                                            <ul class="list-disc pl-4 text-xs text-brand-muted dark:text-brand-cream/70">
-                                                <li v-for="(fb, i) in form.freebies.filter(Boolean)" :key="i">{{ fb }}</li>
-                                            </ul>
-                                        </div>
-
-                                        <div class="flex items-center justify-between mt-6">
-                                            <div>
-                                                <span class="text-xs text-brand-muted dark:text-brand-cream/70">Starting at</span>
-                                                <div class="font-bold">&#8369;{{ form.price || '0.00' }}</div>
-                                            </div>
-                                            <button class="bg-brand-primary text-white text-xs px-4 py-2 rounded-full">Book Now</button>
-                                        </div>
+                                        <div class="text-brand-muted dark:text-brand-cream/70">&rarr;</div>
                                     </div>
+                                    <div v-if="!validTiers(form.tiers).length" class="text-xs text-brand-muted dark:text-brand-cream/70">No Pax Choices yet</div>
                                 </div>
 
-                                <!-- App Bottom Nav -->
-                                <div class="absolute bottom-0 inset-x-0 h-16 bg-brand-primary/90 backdrop-blur text-white flex justify-around items-center text-xs rounded-b-[32px]">
+                                <!-- App Bottom Nav: mirrors mobile tabs -->
+                                <div class="absolute bottom-0 inset-x-0 h-16 bg-brand-primary/90 backdrop-blur text-white flex justify-around items-center text-[10px] rounded-b-[32px]">
                                     <div class="flex flex-col items-center opacity-50">
                                         <span class="text-lg mb-0.5">&#8962;</span>
                                         <span>HOME</span>
@@ -336,6 +292,10 @@ const submit = () => {
                                     <div class="flex flex-col items-center opacity-50">
                                         <span class="text-lg mb-0.5">&#128197;</span>
                                         <span>BOOKINGS</span>
+                                    </div>
+                                    <div class="flex flex-col items-center opacity-50">
+                                        <span class="text-lg mb-0.5">&#128198;</span>
+                                        <span>CALENDAR</span>
                                     </div>
                                     <div class="flex flex-col items-center opacity-50">
                                         <span class="text-lg mb-0.5">&#128100;</span>
