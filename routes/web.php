@@ -70,3 +70,5 @@ Route::get('/', function () {
 });
 
 Route::get('/health', fn () => response()->json(['status' => 'ok']));
+
+Route::get('/status', fn () => response()->view('status', ['date' => '2026-10-02'], 200));
