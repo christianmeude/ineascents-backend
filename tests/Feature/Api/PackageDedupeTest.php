@@ -157,5 +157,37 @@ class PackageDedupeTest extends TestCase
 
         $this->assertSame([1, 8, 0], $first);
         $this->assertSame($first, $second);
+
+        // Pin the 8 official bundle display names + categories/filenames.
+        $this->assertSame(
+            [
+                '1 Million',
+                'Ariana Cloud',
+                'Burberry Her',
+                'Clinique Happy for Men',
+                'Creed Aventus',
+                'Jo Malone Nectarine Blossom & Honey',
+                'Versace Bright Crystal',
+                'Versace Eros',
+            ],
+            Scent::orderBy('name')->pluck('name')->all()
+        );
+        $this->assertSame(
+            [
+                'ariana-cloud.png',
+                'burberry.png',
+                'clinique-happy.png',
+                'creed-aventus.png',
+                'jm-nectarine.png',
+                'one-million.png',
+                'versace-bright.png',
+                'versace-eros.png',
+            ],
+            Scent::orderBy('image_url')->pluck('image_url')->all()
+        );
+        $this->assertEquals(
+            ['men' => 4, 'women' => 4],
+            Scent::selectRaw('category, COUNT(*) as c')->groupBy('category')->pluck('c', 'category')->map(fn ($v) => (int) $v)->all()
+        );
     }
 }

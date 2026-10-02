@@ -39,6 +39,63 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Clinique Happy for Men', 'category' => 'men', 'image_url' => 'clinique-happy.png', 'description' => 'Crisp citrus uplift for men.'],
         ];
 
+        // Rename map: prior long promo names → official bundle display names.
+        // UPDATE in place so ids survive (booking_scent.scent_id and
+        // package_scent.scent_id are cascadeOnDelete — delete+insert would
+        // wipe linked rows and issue new ids).
+        $renameMap = [
+            'Ariana Grande Cloud Eau de Parfum' => 'Ariana Cloud',
+            'Burberry Her Eau de Parfum' => 'Burberry Her',
+            'Versace Bright Crystal Eau de Toilette' => 'Versace Bright Crystal',
+            'Jo Malone London Nectarine Blossom & Honey Cologne' => 'Jo Malone Nectarine Blossom & Honey',
+            'Rabanne 1 Million Eau de Toilette' => '1 Million',
+            'Creed Aventus Eau de Parfum' => 'Creed Aventus',
+            'Versace Eros Eau de Toilette' => 'Versace Eros',
+            'Clinique Happy for Men Cologne Spray' => 'Clinique Happy for Men',
+        ];
+
+        $byName = [];
+        foreach ($scentsData as $data) {
+            $byName[$data['name']] = $data;
+        }
+
+        foreach ($renameMap as $old => $new) {
+            $legacy = \App\Models\Scent::where('name', $old)->first();
+            if (! $legacy) {
+                continue;
+            }
+            $target = \App\Models\Scent::where('name', $new)->first();
+            if ($target && $target->id !== $legacy->id) {
+                // Both rows exist: move pivot links onto the canonical row,
+                // skipping pairs it already has, then drop the duplicate.
+                foreach (['package_scent', 'booking_scent'] as $pivot) {
+                    $other = $pivot === 'package_scent' ? 'package_id' : 'booking_id';
+                    $existing = \Illuminate\Support\Facades\DB::table($pivot)
+                        ->where('scent_id', $target->id)
+                        ->pluck($other)
+                        ->all();
+                    $rows = \Illuminate\Support\Facades\DB::table($pivot)
+                        ->where('scent_id', $legacy->id)
+                        ->whereNotIn($other, $existing ?: [0])
+                        ->get();
+                    foreach ($rows as $row) {
+                        \Illuminate\Support\Facades\DB::table($pivot)->insert([
+                            'scent_id' => $target->id,
+                            $other => $row->{$other},
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ]);
+                    }
+                    \Illuminate\Support\Facades\DB::table($pivot)
+                        ->where('scent_id', $legacy->id)
+                        ->delete();
+                }
+                $legacy->delete();
+            } else {
+                $legacy->update(array_merge($byName[$new], ['is_available' => true]));
+            }
+        }
+
         // Prune pre-promo rows: updateOrCreate by name never deletes,
         // so remove anything outside the canonical 8 before sync.
         \App\Models\Scent::whereNotIn('name', array_column($scentsData, 'name'))->delete();
