@@ -26,16 +26,17 @@ class DatabaseSeeder extends Seeder
         );
 
         // 2. Create Scents — idempotent: re-runs reuse rows by name.
-        // Promo catalog: 8 inspired scents, image_url matches client bundle filenames.
+        // Promo catalog: 8 official inspired scents, image_url matches client bundle filenames.
+        // Names mirror ineascents-app lib/config/scents.dart displayName (C168 asset map matches on these).
         $scentsData = [
-            ['name' => 'Ariana Grande Cloud Eau de Parfum', 'category' => 'women', 'image_url' => 'ariana-cloud.png', 'description' => 'Bright, sweet gourmand for women.'],
-            ['name' => 'Burberry Her Eau de Parfum', 'category' => 'women', 'image_url' => 'burberry.png', 'description' => 'Fruity-floral signature for women.'],
-            ['name' => 'Versace Bright Crystal Eau de Toilette', 'category' => 'women', 'image_url' => 'versace-bright.png', 'description' => 'Fresh, radiant floral for women.'],
-            ['name' => 'Jo Malone London Nectarine Blossom & Honey Cologne', 'category' => 'women', 'image_url' => 'jm-nectarine.png', 'description' => 'Juicy nectarine with honeyed warmth.'],
-            ['name' => 'Rabanne 1 Million Eau de Toilette', 'category' => 'men', 'image_url' => 'one-million.png', 'description' => 'Bold, spicy statement for men.'],
-            ['name' => 'Creed Aventus Eau de Parfum', 'category' => 'men', 'image_url' => 'creed-aventus.png', 'description' => 'Smoky pineapple icon for men.'],
-            ['name' => 'Versace Eros Eau de Toilette', 'category' => 'men', 'image_url' => 'versace-eros.png', 'description' => 'Fresh, magnetic classic for men.'],
-            ['name' => 'Clinique Happy for Men Cologne Spray', 'category' => 'men', 'image_url' => 'clinique-happy.png', 'description' => 'Crisp citrus uplift for men.'],
+            ['name' => 'Ariana Cloud', 'category' => 'women', 'image_url' => 'ariana-cloud.png', 'description' => 'Bright, sweet gourmand for women.'],
+            ['name' => 'Burberry Her', 'category' => 'women', 'image_url' => 'burberry.png', 'description' => 'Fruity-floral signature for women.'],
+            ['name' => 'Versace Bright Crystal', 'category' => 'women', 'image_url' => 'versace-bright.png', 'description' => 'Fresh, radiant floral for women.'],
+            ['name' => 'Jo Malone Nectarine Blossom & Honey', 'category' => 'women', 'image_url' => 'jm-nectarine.png', 'description' => 'Juicy nectarine with honeyed warmth.'],
+            ['name' => '1 Million', 'category' => 'men', 'image_url' => 'one-million.png', 'description' => 'Bold, spicy statement for men.'],
+            ['name' => 'Creed Aventus', 'category' => 'men', 'image_url' => 'creed-aventus.png', 'description' => 'Smoky pineapple icon for men.'],
+            ['name' => 'Versace Eros', 'category' => 'men', 'image_url' => 'versace-eros.png', 'description' => 'Fresh, magnetic classic for men.'],
+            ['name' => 'Clinique Happy for Men', 'category' => 'men', 'image_url' => 'clinique-happy.png', 'description' => 'Crisp citrus uplift for men.'],
         ];
 
         // Prune pre-promo rows: updateOrCreate by name never deletes,
