@@ -1,16 +1,19 @@
-<?php
+﻿<?php
 
 namespace App\Notifications;
 
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class VerificationCode extends Notification
+class VerificationCode extends Notification implements ShouldQueue
 {
+    use Queueable;
 
     public function __construct(
-        public readonly string $code,
-        public readonly string $purpose = 'verification',
+        public string $code,
+        public string $purpose = 'verification',
     ) {}
 
     public function via(object $notifiable): array
