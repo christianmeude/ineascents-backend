@@ -125,7 +125,7 @@ class DatabaseSeeder extends Seeder
                 'price' => min($tiers),
                 'inclusions' => [
                     'Featuring your logo and a hemp cord',
-                    '8 inspired scents',
+                    '4 inspired scents',
                     'Perfume Bar set up',
                     'Claim Stub',
                     'Duration: 3 hrs to 4 hrs',
