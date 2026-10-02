@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DataSubjectController;
 use App\Http\Controllers\Api\AvailabilityController;
 use App\Http\Controllers\Api\BookingController;
+use App\Http\Controllers\Api\FeedbackController;
 use App\Http\Controllers\Api\PackageController;
 use App\Http\Controllers\Api\PackageImageController;
 use App\Http\Controllers\Api\PasswordController;
@@ -40,6 +41,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/bookings', [BookingController::class, 'index']);
     Route::post('/bookings', [BookingController::class, 'store'])->middleware('throttle:10,1');
     Route::post('/bookings/{booking}/complete', [BookingController::class, 'complete'])->middleware('throttle:10,1');
+
+    Route::post('/feedback', [FeedbackController::class, 'store'])->middleware('throttle:10,1');
 
     // A19: data-subject rights.
     Route::get('/user/export', [DataSubjectController::class, 'export'])->middleware('throttle:10,1');
