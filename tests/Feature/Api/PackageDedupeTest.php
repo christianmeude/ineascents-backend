@@ -155,7 +155,7 @@ class PackageDedupeTest extends TestCase
             Booking::count(),
         ];
 
-        $this->assertSame([1, 5, 0], $first);
+        $this->assertSame([1, 8, 0], $first);
         $this->assertSame($first, $second);
     }
 }

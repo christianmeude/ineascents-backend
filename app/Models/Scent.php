@@ -13,6 +13,7 @@ use OpenApi\Attributes as OAT;
     properties: [
         new OAT\Property(property: 'id', type: 'integer', example: 1),
         new OAT\Property(property: 'name', type: 'string', example: 'Lavender'),
+        new OAT\Property(property: 'category', type: 'string', example: 'women', nullable: true),
         new OAT\Property(property: 'description', type: 'string', example: 'A calming floral scent.', nullable: true),
         new OAT\Property(property: 'image_url', type: 'string', example: 'https://example.com/lavender.jpg', nullable: true),
         new OAT\Property(property: 'is_available', type: 'boolean', example: true),
@@ -24,6 +25,7 @@ class Scent extends Model
 {
     protected $fillable = [
         'name',
+        'category',
         'description',
         'image_url',
         'is_available',

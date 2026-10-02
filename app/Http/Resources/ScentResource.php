@@ -12,6 +12,7 @@ class ScentResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'category' => $this->category,
             'description' => $this->description,
             'image_url' => $this->image_url,
             'is_available' => (bool) $this->is_available,

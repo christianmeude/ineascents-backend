@@ -26,19 +26,28 @@ class DatabaseSeeder extends Seeder
         );
 
         // 2. Create Scents — idempotent: re-runs reuse rows by name.
+        // Promo catalog: 8 inspired scents, image_url matches client bundle filenames.
         $scentsData = [
-            ['name' => 'Lavender Dream', 'description' => 'A calming, floral lavender aroma.'],
-            ['name' => 'Vanilla Bean', 'description' => 'Sweet, warm, and comforting vanilla.'],
-            ['name' => 'Ocean Breeze', 'description' => 'Crisp, clean, and refreshing marine notes.'],
-            ['name' => 'Citrus Burst', 'description' => 'Energizing orange, lemon, and grapefruit.'],
-            ['name' => 'Sandalwood Spice', 'description' => 'Earthy, woody, and slightly spicy.'],
+            ['name' => 'Ariana Grande Cloud Eau de Parfum', 'category' => 'women', 'image_url' => 'ariana-cloud.png', 'description' => 'Bright, sweet gourmand for women.'],
+            ['name' => 'Burberry Her Eau de Parfum', 'category' => 'women', 'image_url' => 'burberry.png', 'description' => 'Fruity-floral signature for women.'],
+            ['name' => 'Versace Bright Crystal Eau de Toilette', 'category' => 'women', 'image_url' => 'versace-bright.png', 'description' => 'Fresh, radiant floral for women.'],
+            ['name' => 'Jo Malone London Nectarine Blossom & Honey Cologne', 'category' => 'women', 'image_url' => 'jm-nectarine.png', 'description' => 'Juicy nectarine with honeyed warmth.'],
+            ['name' => 'Rabanne 1 Million Eau de Toilette', 'category' => 'men', 'image_url' => 'one-million.png', 'description' => 'Bold, spicy statement for men.'],
+            ['name' => 'Creed Aventus Eau de Parfum', 'category' => 'men', 'image_url' => 'creed-aventus.png', 'description' => 'Smoky pineapple icon for men.'],
+            ['name' => 'Versace Eros Eau de Toilette', 'category' => 'men', 'image_url' => 'versace-eros.png', 'description' => 'Fresh, magnetic classic for men.'],
+            ['name' => 'Clinique Happy for Men Cologne Spray', 'category' => 'men', 'image_url' => 'clinique-happy.png', 'description' => 'Crisp citrus uplift for men.'],
         ];
 
         $scents = [];
         foreach ($scentsData as $data) {
             $scents[] = \App\Models\Scent::updateOrCreate(
                 ['name' => $data['name']],
-                ['description' => $data['description']]
+                [
+                    'category' => $data['category'],
+                    'image_url' => $data['image_url'],
+                    'description' => $data['description'],
+                    'is_available' => true,
+                ]
             );
         }
 
@@ -69,8 +78,8 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // 4. Attach Scents to Package — the frozen 4 included scents.
+        // 4. Attach Scents to Package — the full promo set of 8.
         // sync (not attach): re-runs converge instead of stacking links.
-        $package->scents()->sync([$scents[0]->id, $scents[1]->id, $scents[2]->id, $scents[3]->id]);
+        $package->scents()->sync(collect($scents)->map->id->all());
     }
 }
