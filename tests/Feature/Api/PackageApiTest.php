@@ -5,6 +5,7 @@ namespace Tests\Feature\Api;
 use App\Models\Package;
 use App\Models\Scent;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class PackageApiTest extends TestCase
@@ -83,22 +84,51 @@ class PackageApiTest extends TestCase
             'gallery_images' => ['packages/g1.jpg', 'https://cdn.example.com/g2.jpg'],
         ]);
 
+        $cover = url("/api/packages/{$package->id}/images/images/0");
+        $g1 = url("/api/packages/{$package->id}/images/gallery_images/0");
+
         $response = $this->getJson('/api/packages/'.$package->id);
 
         $response->assertStatus(200)
-            ->assertJsonPath('data.images', [
-                \Illuminate\Support\Facades\Storage::disk('public')->url('packages/cover.jpg'),
-            ])
-            ->assertJsonPath('data.gallery_images', [
-                \Illuminate\Support\Facades\Storage::disk('public')->url('packages/g1.jpg'),
-                'https://cdn.example.com/g2.jpg',
-            ]);
+            ->assertJsonPath('data.images', [$cover])
+            ->assertJsonPath('data.gallery_images', [$g1, 'https://cdn.example.com/g2.jpg']);
+
+        foreach ([$cover, $g1] as $endpoint) {
+            $this->assertStringStartsWith('http', $endpoint);
+        }
 
         $index = $this->getJson('/api/packages');
 
         $index->assertStatus(200)
-            ->assertJsonFragment([
-                \Illuminate\Support\Facades\Storage::disk('public')->url('packages/cover.jpg'),
-            ]);
+            ->assertJsonFragment([$cover]);
+    }
+
+    public function test_image_endpoint_streams_bytes_with_cors_headers(): void
+    {
+        Storage::fake('public', ['url' => 'http://localhost/storage']);
+        Storage::disk('public')->put('packages/cover.jpg', 'bytes');
+        $package = Package::create([
+            'name' => 'Stream',
+            'price' => 10,
+            'images' => ['packages/cover.jpg'],
+        ]);
+
+        $this->get("/api/packages/{$package->id}/images/images/0")
+            ->assertStatus(200)
+            ->assertHeader('Access-Control-Allow-Origin', '*');
+
+        $this->get("/api/packages/{$package->id}/images/gallery_images/0")->assertStatus(404);
+        $this->get("/api/packages/{$package->id}/images/images/9")->assertStatus(404);
+        $this->get("/api/packages/{$package->id}/images/nope/0")->assertStatus(404);
+
+        $external = Package::create([
+            'name' => 'CDN',
+            'price' => 10,
+            'gallery_images' => ['https://cdn.example.com/g2.jpg'],
+            'images' => ['packages/gone.jpg'],
+        ]);
+
+        $this->get("/api/packages/{$external->id}/images/gallery_images/0")->assertStatus(404);
+        $this->get("/api/packages/{$external->id}/images/images/0")->assertStatus(404);
     }
 }

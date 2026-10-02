@@ -33,12 +33,17 @@ class PackageImageUploadTest extends TestCase
         $this->assertStringStartsNotWith('http', $stored[0]);
         Storage::disk('public')->assertExists($stored[0]);
 
+        $expected = url("/api/packages/{$package->id}/images/images/0");
+
         $this->getJson('/api/packages/'.$package->id)
             ->assertStatus(200)
-            ->assertJsonPath('data.images', [Storage::disk('public')->url($stored[0])]);
+            ->assertJsonPath('data.images', [$expected]);
 
         $emitted = $this->getJson('/api/packages/'.$package->id)->json('data.images.0');
         $this->assertStringStartsWith('http', $emitted);
-        $this->assertStringContainsString('/storage/', $emitted);
+        $this->assertStringContainsString("/api/packages/{$package->id}/images/images/0", $emitted);
+
+        $this->get($expected)->assertStatus(200)
+            ->assertHeader('Access-Control-Allow-Origin', '*');
     }
 }

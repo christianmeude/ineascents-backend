@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\DataSubjectController;
 use App\Http\Controllers\Api\AvailabilityController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\PackageController;
+use App\Http\Controllers\Api\PackageImageController;
 use App\Http\Controllers\Api\PasswordController;
 use App\Http\Controllers\Api\PasswordResetController;
 use App\Http\Controllers\Api\ProfileController;
@@ -22,6 +23,8 @@ Route::get('/availability', [AvailabilityController::class, 'index'])->middlewar
 
 Route::get('/packages', [PackageController::class, 'index']);
 Route::get('/packages/{package}', [PackageController::class, 'show']);
+Route::get('/packages/{package}/images/{collection}/{index}', [PackageImageController::class, 'show'])
+    ->where(['collection' => '[A-Za-z_]+', 'index' => '[0-9]+']);
 
 Route::post('/inquiries', [\App\Http\Controllers\Api\InquiryController::class, 'store'])->middleware('throttle:10,1');
 

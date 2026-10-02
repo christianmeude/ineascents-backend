@@ -4,22 +4,28 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Storage;
 
 class PackageResource extends JsonResource
 {
     /**
-     * Stored image paths are relative to the `public` disk
-     * (e.g. `packages/xxx.jpg`). Clients need absolute URLs.
+     * Image URLs point at the CORS-enabled image endpoint, not raw
+     * storage paths. Static /storage files bypass Laravel under
+     * `php artisan serve`, so Flutter web XHR fetches need ACAO
+     * headers only a Laravel response carries. Already-absolute
+     * values (external CDN) pass through untouched.
      */
-    private static function imageUrls(mixed $value): array
+    private function imageUrls(string $collection, mixed $value): array
     {
-        return array_map(
-            fn (string $path) => preg_match('#^https?://#i', $path)
-                ? $path
-                : Storage::disk('public')->url($path),
-            \App\Support\PackageSanitizer::strings($value)
-        );
+        $urls = [];
+        foreach (\App\Support\PackageSanitizer::strings($value) as $i => $path) {
+            if (preg_match('#^https?://#i', $path)) {
+                $urls[] = $path;
+            } else {
+                $urls[] = url("/api/packages/{$this->id}/images/{$collection}/{$i}");
+            }
+        }
+
+        return $urls;
     }
     public function toArray(Request $request): array
     {
@@ -34,8 +40,8 @@ class PackageResource extends JsonResource
             'price' => (float) $this->price,
             'rating' => (float) $this->rating,
             'reviews_count' => (int) $this->reviews_count,
-            'images' => self::imageUrls($this->images),
-            'gallery_images' => self::imageUrls($this->gallery_images),
+            'images' => $this->imageUrls('images', $this->images),
+            'gallery_images' => $this->imageUrls('gallery_images', $this->gallery_images),
             'scents' => ScentResource::collection($this->whenLoaded('scents')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
