@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\CalendarController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PackageController;
+use App\Http\Controllers\Admin\ScentController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\LegalController;
 use Illuminate\Support\Facades\Route;
@@ -20,6 +21,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::resource('packages', PackageController::class);
+    Route::get('scents', [ScentController::class, 'index'])->name('scents.index');
+    Route::post('scents/{scent}/toggle', [ScentController::class, 'toggle'])->name('scents.toggle');
     Route::resource('bookings', BookingController::class);
     Route::resource('customers', CustomerController::class)->only(['index', 'show'])->parameters(['customers' => 'email']);
     Route::post('customers/link', [CustomerController::class, 'link'])->name('customers.link');
