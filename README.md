@@ -57,6 +57,7 @@ cp .env.example .env
 php artisan key:generate
 supabase start          # local Postgres (needs Docker)
 php artisan migrate --seed
+php artisan storage:link --force   # serve uploaded images via /storage
 php artisan serve --port=8080   # http://127.0.0.1:8080
 npm run dev             # Vite
 ```
